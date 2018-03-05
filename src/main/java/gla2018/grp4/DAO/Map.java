@@ -1,4 +1,4 @@
-package DAO;
+package gla2018.grp4.DAO;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,97 +11,97 @@ public class Map {
     public ArrayList<Location> locationList;
     public LocalDateTime created;
     public ArrayList<User> privateUsers;
-    
+
     public boolean isPublic=true;
     public boolean isFavorite=false;
-    
+
     /**
-     * 
+     *
      * @param owner
-     * @param name 
+     * @param name
      */
     public Map(User owner, String name){
         this.name = name;
         this.user = owner;
         this.created = LocalDateTime.now();
     }
-    
+
     /**
-     * 
-     * @param owner 
+     *
+     * @param owner
      */
     public Map(User owner){
         this.user = owner;
         this.created = LocalDateTime.now();
     }
-    
+
     /**
-     * 
-     * @param name 
+     *
+     * @param name
      */
     public void setName(String name){
         this.name = name;
     }
-    
+
     /**
-     * 
+     *
      */
     public void setFavorite(){
         isFavorite=true;
     }
-    
+
     /**
-     * 
+     *
      */
     public void setPrivate(){
         isPublic=false;
     }
-    
+
     /**
-     * 
+     *
      */
     public void changeFavorite(){
         isFavorite=!isFavorite;
     }
-    
+
     /**
-     * 
+     *
      */
     public void changePublic(){
         isPublic=!isPublic;
     }
-    
+
     /**
-     * 
-     * @param location 
+     *
+     * @param location
      */
     public void addLocation(Location location){
         this.locationList.add(location);
     }
-    
+
     /**
-     * 
-     * @param location 
+     *
+     * @param location
      */
     public void removeLocation(Location location){
         this.locationList.remove(location);
     }
-    
+
     /**
-     * 
-     * @param user 
+     *
+     * @param user
      */
     public void addPrivateUser(User user){
         if(this.user != user){
-            
+
         this.privateUsers.add(user);
         user.addMap(this);
         }
     }
-    
+
     /**
-     * 
-     * @param user 
+     *
+     * @param user
      */
     public void removePrivateUser(User user){
         if(this.user != user){
