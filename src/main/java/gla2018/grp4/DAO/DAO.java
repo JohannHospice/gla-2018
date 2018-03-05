@@ -5,16 +5,16 @@ import java.util.ArrayList;
 public class DAO {
 
 	public static UserDAO getActionUser(){
-		return new UserDAO();
+		return new UserDAODummy();
 	}
 
 	public static MapDAO getActionMap()
 	{
-		return new MapDAO();
+		return new MapDAODummy();
 	}
 
 	public static LocationDAO getActionDAO()
 	{
-		return new LocationDAO();
+		return new LocationDAODummy();
 	}
 }

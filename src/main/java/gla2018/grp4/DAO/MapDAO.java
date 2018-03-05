@@ -3,46 +3,55 @@ package gla2018.grp4.DAO;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class MapDAO implements MapInterface{
+public interface MapInterface {
+    /**
+     *
+     * @return list of all maps
+     */
+    ArrayList<Map> getMaps();
 
-	public ArrayList<Map> getMaps() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     *
+     * @param user
+     * @return list of maps from a user
+     */
+    ArrayList<Map> getMaps(User user);
 
-	public ArrayList<Map> getMaps(User user) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     *
+     * @param date
+     * @return list of maps created after a specific date
+     */
+    ArrayList<Map> getMaps(LocalDateTime date);
 
-	public ArrayList<Map> getMaps(LocalDateTime date) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     *
+     * @return list of public maps
+     */
+    ArrayList<Map> getPublicMaps();
 
-	public ArrayList<Map> getPublicMaps() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     *
+     * @return list of public maps from a user
+     */
+    ArrayList<Map> getPublicMaps(User user);
 
-	public ArrayList<Map> getPublicMaps(User user) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     *
+     * @param user
+     * @return list of maps from user's friends
+     */
+    ArrayList<Map> getFriendMaps(User user);
 
-	public ArrayList<Map> getFriendsMap(User user) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /** TODO
+	 *
+     * create a new Map
+     */
+    void createMap();
 
-	public void createMap() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void deleteMap(Map map) {
-		// TODO Auto-generated method stub
-
-	}
-
+    /**
+     *
+     * @param map
+     */
+    void deleteMap(Map map);
 }
