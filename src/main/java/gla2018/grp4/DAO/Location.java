@@ -1,4 +1,4 @@
-package DAO;
+package gla2018.grp4.DAO;
 
 import java.time.LocalDateTime;
 
@@ -11,30 +11,30 @@ public class Location {
     public boolean isFavorite=false;
 
     /**
-     * 
-     * @param map 
+     *
+     * @param map
      */
     public Location(Map map){
         this.map = map;
         this.created = LocalDateTime.now();
-    }   
-    
+    }
+
     /**
-     * 
+     *
      * @param map
-     * @param nameplace 
+     * @param nameplace
      */
     public Location(Map map,String nameplace){
         this.map = map;
         this.nameplace = nameplace;
         this.created = LocalDateTime.now();
     }
-    
+
     /**
-     * 
+     *
      * @param map
      * @param nameplace
-     * @param url 
+     * @param url
      */
     public Location(Map map,String nameplace, String url){
         this.map = map;
@@ -42,13 +42,13 @@ public class Location {
         this.urlImg = url;
         this.created = LocalDateTime.now();
     }
-    
+
     /**
-     * 
+     *
      * @param map
      * @param nameplace
      * @param url
-     * @param content 
+     * @param content
      */
     public Location(Map map,String nameplace, String url, String content){
         this.map = map;
@@ -57,62 +57,62 @@ public class Location {
         this.content = content;
         this.created = LocalDateTime.now();
     }
-    
+
     /**
-     * 
-     * @param content 
+     *
+     * @param content
      */
     public void setContent(String content){
         this.content = content;
     }
-    
+
     /**
-     * 
-     * @param name 
+     *
+     * @param name
      */
     public void setNamePlace(String name){
         this.nameplace= name;
     }
-    
+
     /**
-     * 
-     * @param url 
+     *
+     * @param url
      */
     public void setImage(String url){
         this.urlImg = url;
     }
-    
+
     /**
-     * 
+     *
      * @return the content of the locations
      */
     public String getContent(){
         return this.content;
     }
-    
+
     /**
-     * 
+     *
      * @return the name of location
      */
     public String getNamePlace(){
         return this.nameplace;
     }
-    
+
     /**
-     * 
-     * @return the url of the location's image 
+     *
+     * @return the url of the location's image
      */
     public String getImage(){
         return this.urlImg;
     }
-    
+
     /**
-     * 
+     *
      */
     public void setFavorite(){
         isFavorite = true;
     }
-    
+
     /**
      * change the location attribute
      */
