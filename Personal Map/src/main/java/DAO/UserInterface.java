@@ -4,23 +4,31 @@ import java.util.ArrayList;
 
 public interface UserInterface {
     /**
+     * cc
      * @return the list of user
      */
     ArrayList<User> getUsers();
     
     /**
-     * @param user
+     * @param username
      * @return the friendlist of the specific user
     */
-    ArrayList<User> getFriends(User user);
+    ArrayList<String> getFriends(String username);
     
     
     /**
      * 
-     * @param user
-     * @return all the user informations in a String
+     * @param username
+     * @return all the user informations
      */
-    String getInfoUser(User user);
-   
+    User getInfoUser(String username);
+    
+    /**
+     * 
+     * 
+     * @param username
+     * @return all the user maps
+     */
+    ArrayList<Map> getMapsOfUser(String username);
 }
 

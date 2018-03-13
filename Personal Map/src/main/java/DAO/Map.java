@@ -7,10 +7,9 @@ import java.util.Date;
 
 public class Map {
     public String name="NoDefined";
-    public User user;
     public ArrayList<Location> locationList;
     public LocalDateTime created;
-    public ArrayList<User> privateUsers;
+    public ArrayList<String> privateUsers; //un username
     
     public boolean isPublic=true;
     public boolean isFavorite=false;
@@ -20,9 +19,8 @@ public class Map {
      * @param owner
      * @param name 
      */
-    public Map(User owner, String name){
+    public Map(String name){
         this.name = name;
-        this.user = owner;
         this.created = LocalDateTime.now();
     }
     
@@ -30,8 +28,7 @@ public class Map {
      * 
      * @param owner 
      */
-    public Map(User owner){
-        this.user = owner;
+    public Map(){
         this.created = LocalDateTime.now();
     }
     
@@ -91,22 +88,12 @@ public class Map {
      * 
      * @param user 
      */
-    public void addPrivateUser(User user){
-        if(this.user != user){
+    /*public void addPrivateUser(String user){
+        if(!this.user.equals(user)){
             
         this.privateUsers.add(user);
         user.addMap(this.name);
         }
-    }
-    
-    /**
-     * 
-     * @param user 
-     */
-    public void removePrivateUser(User user){
-        if(this.user != user){
-        this.privateUsers.remove(user);
-        user.deleteMap(this);
-        }
-    }
+    }*/
+
 }

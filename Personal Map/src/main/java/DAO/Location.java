@@ -3,18 +3,18 @@ package DAO;
 import java.time.LocalDateTime;
 
 public class Location {
-    public Map map;
     public String nameplace;
     public String urlImg;
     public String content;
     public LocalDateTime created;
     public boolean isFavorite=false;
-
+    
+    
     /**
      * 
      * @param map 
      */
-    public Location(Map map){
+    /*public Location(Map map){
         this.map = map;
         this.created = LocalDateTime.now();
     }   
@@ -24,8 +24,7 @@ public class Location {
      * @param map
      * @param nameplace 
      */
-    public Location(Map map,String nameplace){
-        this.map = map;
+    public Location(String nameplace){
         this.nameplace = nameplace;
         this.created = LocalDateTime.now();
     }
@@ -36,8 +35,7 @@ public class Location {
      * @param nameplace
      * @param url 
      */
-    public Location(Map map,String nameplace, String url){
-        this.map = map;
+    public Location(String nameplace, String url){
         this.nameplace = nameplace;
         this.urlImg = url;
         this.created = LocalDateTime.now();
@@ -50,14 +48,13 @@ public class Location {
      * @param url
      * @param content 
      */
-    public Location(Map map,String nameplace, String url, String content){
-        this.map = map;
+    public Location(String nameplace, String url, String content){
         this.nameplace = nameplace;
         this.urlImg = url;
         this.content = content;
         this.created = LocalDateTime.now();
     }
-    
+   
     /**
      * 
      * @param content 

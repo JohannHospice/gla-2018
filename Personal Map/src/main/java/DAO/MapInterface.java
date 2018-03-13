@@ -12,13 +12,6 @@ public interface MapInterface {
     
     /**
      * 
-     * @param user
-     * @return the list of the specific user's maps
-     */
-    ArrayList<Map> getMaps(User user);
-    
-    /**
-     * 
      * @param date
      * @return the list of maps created after a specific date
      */
@@ -29,12 +22,6 @@ public interface MapInterface {
      * @return the list of public maps
      */
     ArrayList<Map> getPublicMaps();
-    
-    /**
-     * 
-     * @return the list of public maps of a specific user
-     */
-    ArrayList<Map> getPublicMaps(User user);
     
     /**
      * 

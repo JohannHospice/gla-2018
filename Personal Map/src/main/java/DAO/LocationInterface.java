@@ -12,13 +12,6 @@ public interface LocationInterface {
     
     /**
      * 
-     * @param map
-     * @return the list of locations of the specific map
-     */
-    ArrayList<Location> getLocations(Map map);
-    
-    /**
-     * 
      * @param user
      * @return the list of locations created by the user
      */
