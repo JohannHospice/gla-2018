@@ -9,13 +9,19 @@ public class UserDAO implements UserInterface{
 		return null;
 	}
 
-	public ArrayList<User> getFriends(User user) {
+	public ArrayList<String> getFriends(String username) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String getInfoUser(User user) {
+	public User getInfoUser(String username) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public ArrayList<Map> getMapsOfUser(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

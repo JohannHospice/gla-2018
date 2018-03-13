@@ -98,7 +98,7 @@ public class ElasticTest {
 		user2.mapList = new ArrayList<String>();
 		user3.mapList = new ArrayList<String>();
 		user2.friendList =  new ArrayList<String>();
-		user3.friendList = f2;                                                            ;
+		user3.friendList = f2;                                                            
 		
 		InsertUser(user, client);
 		
