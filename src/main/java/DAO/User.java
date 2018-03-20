@@ -21,10 +21,59 @@ public class User{
     
     /**
      * 
+     * @param username
+     * @param mail
+     * @param password
+     */
+    public User(String username, String mail,String password){
+        this.username = username;
+    	this.mail = mail;
+        this.password = password;
+    }
+    
+    /**
+     * 
      * @param username 
      */
     public void setUsername(String username){
         this.username = username;
+    }
+    
+    /**
+     * 
+     */
+    public String getUsername(){
+        return this.username;
+    }
+    
+    /**
+     * 
+     * @param password
+     */
+    public void setPassword(String password){
+        this.password = password;
+    }
+    
+    /**
+     * 
+     */
+    public String getPassword(){
+        return this.password;
+    }
+    
+    /**
+     * 
+     * @param mail
+     */
+    public void setMail(String mail){
+        this.mail = mail;
+    }
+    
+    /**
+     * 
+     */
+    public String getMail(){
+        return this.mail;
     }
     
     /**
