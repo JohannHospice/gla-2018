@@ -18,10 +18,10 @@ public class Location {
         this.map = map;
         this.created = LocalDateTime.now();
     }   
+    */
     
     /**
      * 
-     * @param map
      * @param nameplace 
      */
     public Location(String nameplace){
@@ -31,7 +31,6 @@ public class Location {
     
     /**
      * 
-     * @param map
      * @param nameplace
      * @param url 
      */
@@ -43,7 +42,6 @@ public class Location {
     
     /**
      * 
-     * @param map
      * @param nameplace
      * @param url
      * @param content 
