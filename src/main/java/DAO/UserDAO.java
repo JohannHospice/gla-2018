@@ -1,27 +1,123 @@
 package DAO;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.get.GetRequest;
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.rest.RestStatus;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+/*
+ * Index name : "users"
+ * 
+ */
 public class UserDAO implements UserInterface{
 
-	public ArrayList<User> getUsers() {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<User> getUsers(RestHighLevelClient client) throws IOException {
+		ArrayList<User> users = new ArrayList<User>();
+		
+		SearchRequest searchRequest = new SearchRequest("users"); 
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
+		searchSourceBuilder.query(QueryBuilders.matchAllQuery()); 
+		searchRequest.source(searchSourceBuilder);
+		
+		SearchResponse searchResponse = client.search(searchRequest);
+		SearchHits hits = searchResponse.getHits();
+		long totalHits = hits.getTotalHits();
+		float maxScore = hits.getMaxScore();
+		System.out.println("total : "+totalHits+", maxScore : "+maxScore);
+		
+		SearchHit[] searchHits = hits.getHits();
+		for (SearchHit hit : searchHits) {
+		    // do something with the SearchHit
+			//String index = hit.getId();
+			
+			String sourceAsString = hit.getSourceAsString();
+			User user = new ObjectMapper().readValue(sourceAsString, User.class);
+			
+			users.add(user);
+		}
+		
+		return users;
+		
 	}
 
-	public ArrayList<String> getFriends(String username) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public User getOneUser(RestHighLevelClient client, String username) throws IOException{
+		GetRequest getRequest = new GetRequest(
+		        "users", 
+		        "doc",  
+		        username); 
+		String sourceAsString = "";
+		try {
+			
+			GetResponse getResponse = client.get(getRequest);
+
+			if (getResponse.isExists()) {
+			    sourceAsString = getResponse.getSourceAsString();        
+			    System.out.println(sourceAsString+"\n");
+			} else {
+			    System.out.println("Impossible de trouver l'User "+username);
+			    return null;
+			}
+		} catch (ElasticsearchException e) {
+		    if (e.status() == RestStatus.NOT_FOUND) {
+		        
+		    }
+		}
+
+		return new ObjectMapper().readValue(sourceAsString, User.class);
+	}
+	
+	public ArrayList<String> getFriends(RestHighLevelClient client, String username) throws IOException{
+		return getOneUser(client,username).friendList;
 	}
 
-	public User getInfoUser(String username) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	public ArrayList<Map> getMapsOfUser(String username) {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<String> getMapsOfUser(RestHighLevelClient client, String username) throws IOException{
+		return getOneUser(client,username).mapList;
+	}
+	
+	public boolean insertUser(RestHighLevelClient client, User user) throws IOException
+	{
+		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String json = ow.writeValueAsString(user);
+		
+		Map<String, Object> jsonMap = new HashMap<String, Object>();
+		/*
+		jsonMap.put("username", user.username);
+		jsonMap.put("password", user.password);
+		jsonMap.put("mail", user.mail);
+		jsonMap.put("friends", user.friendList);
+		jsonMap.put("maps", user.mapList);
+		*/
+		jsonMap.put("username", json);
+		
+		
+		IndexRequest indexRequest = new IndexRequest("users", "doc",user.username)
+		        .source(jsonMap);
+		
+		try {
+			IndexResponse indexResponse = client.index(indexRequest);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 }

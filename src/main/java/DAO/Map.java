@@ -6,7 +6,7 @@ import java.util.Date;
 
 
 public class Map {
-    public String name="NoDefined";
+    public String name="NoDefined"; //C'est l'id : nomdemap_username
     public ArrayList<Location> locationList;
     public LocalDateTime created;
     public ArrayList<String> privateUsers; //un username
