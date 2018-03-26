@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -17,6 +18,8 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.support.replication.ReplicationResponse;
+import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
@@ -40,6 +43,36 @@ public class MapDAO implements MapInterface{
 		SearchRequest searchRequest = new SearchRequest("maps"); 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
 		searchSourceBuilder.query(QueryBuilders.matchAllQuery()); 
+		searchRequest.source(searchSourceBuilder);
+		
+		SearchResponse searchResponse = client.search(searchRequest);
+		SearchHits hits = searchResponse.getHits();
+		long totalHits = hits.getTotalHits();
+		float maxScore = hits.getMaxScore();
+		System.out.println("total : "+totalHits+", maxScore : "+maxScore);
+		
+		SearchHit[] searchHits = hits.getHits();
+		for (SearchHit hit : searchHits) {
+		    // do something with the SearchHit
+			//String index = hit.getId();
+			
+			String sourceAsString = hit.getSourceAsString();
+			Map map = new ObjectMapper().readValue(sourceAsString, Map.class);
+			
+			maps.add(map);
+		}
+		
+		return maps;
+	}
+	
+	public ArrayList<Map> getMaps(RestHighLevelClient client, int from, int size) throws IOException {
+		ArrayList<Map> maps = new ArrayList<Map>();
+		
+		SearchRequest searchRequest = new SearchRequest("maps"); 
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
+		searchSourceBuilder.query(QueryBuilders.matchAllQuery()); 
+		searchSourceBuilder.from(from); 
+		searchSourceBuilder.size(size);
 		searchRequest.source(searchSourceBuilder);
 		
 		SearchResponse searchResponse = client.search(searchRequest);
@@ -120,13 +153,72 @@ public class MapDAO implements MapInterface{
 		
 		return maps;
 	}
+	
+	public ArrayList<Map> getPublicMaps(RestHighLevelClient client, int from, int size) throws IOException{
+		ArrayList<Map> maps = new ArrayList<Map>();
+		
+		SearchRequest searchRequest = new SearchRequest("maps"); 
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
+		searchSourceBuilder.query(QueryBuilders.termQuery("isPublic", "true"));
+		searchSourceBuilder.from(from); 
+		searchSourceBuilder.size(size);
+		searchRequest.source(searchSourceBuilder);
+		
+		SearchResponse searchResponse = client.search(searchRequest);
+		SearchHits hits = searchResponse.getHits();
+		long totalHits = hits.getTotalHits();
+		float maxScore = hits.getMaxScore();
+		
+		SearchHit[] searchHits = hits.getHits();
+		for (SearchHit hit : searchHits) {
+		    // do something with the SearchHit
+			//String index = hit.getId();
+			
+			String sourceAsString = hit.getSourceAsString();
+			Map map = new ObjectMapper().readValue(sourceAsString, Map.class);
+			
+			maps.add(map);
+		}
+		
+		return maps;
+	}
 
+	
 	public ArrayList<Map> getPublicMapsByUsername(RestHighLevelClient client, String username) throws IOException{
 		ArrayList<Map> maps = new ArrayList<Map>();
 		
 		SearchRequest searchRequest = new SearchRequest("maps"); 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
 		searchSourceBuilder.query(QueryBuilders.termQuery("isPublic", "true"));
+		searchRequest.source(searchSourceBuilder);
+		
+		SearchResponse searchResponse = client.search(searchRequest);
+		SearchHits hits = searchResponse.getHits();
+		long totalHits = hits.getTotalHits();
+		float maxScore = hits.getMaxScore();
+		
+		SearchHit[] searchHits = hits.getHits();
+		for (SearchHit hit : searchHits) {
+		    // do something with the SearchHit
+			//String index = hit.getId();
+			
+			String sourceAsString = hit.getSourceAsString();
+			Map map = new ObjectMapper().readValue(sourceAsString, Map.class);
+			if(compareNamesMapUser(map.name, username))
+				maps.add(map);
+		}
+		
+		return maps;
+	}
+	
+	public ArrayList<Map> getPublicMapsByUsername(RestHighLevelClient client, String username, int from, int size) throws IOException{
+		ArrayList<Map> maps = new ArrayList<Map>();
+		
+		SearchRequest searchRequest = new SearchRequest("maps"); 
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
+		searchSourceBuilder.query(QueryBuilders.termQuery("isPublic", "true"));
+		searchSourceBuilder.from(from); 
+		searchSourceBuilder.size(size);
 		searchRequest.source(searchSourceBuilder);
 		
 		SearchResponse searchResponse = client.search(searchRequest);
@@ -213,6 +305,29 @@ public class MapDAO implements MapInterface{
 		return true;		
 	}
 
-	
+	public boolean updateMap(RestHighLevelClient client, Map map) throws IOException{
+		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
+		jsonMap.put("locationList", map.locationList);
+		jsonMap.put("privateUsers", map.privateUsers);
+		UpdateRequest request = new UpdateRequest("maps", 
+		        "doc",  
+		        map.name)
+		        .doc(jsonMap);
+		UpdateResponse updateResponse = client.update(request);
+		request.docAsUpsert(false);
+		
+		if (updateResponse.getResult() == DocWriteResponse.Result.UPDATED) {
+			System.out.println("La map "+map.name+ " a été mis à jour");
+		} else if (updateResponse.getResult() == DocWriteResponse.Result.DELETED) {
+			System.out.println("La map "+map.name+ " a été supprimé");
+			return false;
+		} else if (updateResponse.getResult() == DocWriteResponse.Result.NOOP) {
+			System.out.println("La map "+map.name+ " n'a pas pu être mis à jour");
+			return false;
+		}
+		
+		
+		return true;
+	}
 
 }

@@ -13,6 +13,12 @@ public interface MapInterface {
      */
 	ArrayList<Map> getMaps(RestHighLevelClient client) throws IOException;
     
+	/**
+     * 
+     * @return the list of all maps following an interval 
+     */
+	ArrayList<Map> getMaps(RestHighLevelClient client, int from, int size) throws IOException;
+	
     /**
      * @param user
      * @return the list of map of the user
@@ -34,10 +40,21 @@ public interface MapInterface {
     ArrayList<Map> getPublicMaps(RestHighLevelClient client) throws IOException;
     
     /**
+     * 
+     * @return the list of public maps following an interval
+     */
+    ArrayList<Map> getPublicMaps(RestHighLevelClient client, int from, int size) throws IOException;
+    /**
      * @param username
      * @return the list of public maps of the specific user
      */
     ArrayList<Map> getPublicMapsByUsername(RestHighLevelClient client, String username) throws IOException;
+    
+    /**
+     * @param username
+     * @return the list of public maps of the specific user following an interval
+     */
+    ArrayList<Map> getPublicMapsByUsername(RestHighLevelClient client, String username, int from, int size) throws IOException;
     
     /**
      * 
@@ -56,11 +73,16 @@ public interface MapInterface {
     
     /**
      * 
-     * @param map 
+     * @param map_name
      * @return true if the request succeded, else false
      */
     boolean deleteMap(RestHighLevelClient client, String map_name) throws IOException;
     
-    
+    /**
+     * 
+     * @param map_name 
+     * @return true if the request succeded, else false
+     */
+    boolean updateMap(RestHighLevelClient client, Map map) throws IOException;
     
 }

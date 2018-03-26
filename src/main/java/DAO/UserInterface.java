@@ -15,6 +15,12 @@ public interface UserInterface {
     
     /**
      * 
+     * @return the list of user following an interval
+     * @throws IOException 
+     */
+    ArrayList<User> getUsers(RestHighLevelClient client, int from, int size) throws IOException;
+    /**
+     * 
      * @param username
      * @return all the user informations
      */
@@ -31,13 +37,21 @@ public interface UserInterface {
      * @param username
      * @return all the user maps
      */
-    public ArrayList<String> getMapsOfUser(RestHighLevelClient client, String username) throws IOException;
+    ArrayList<String> getMapsOfUser(RestHighLevelClient client, String username) throws IOException;
     
     /**
      * 
      * @param user
      * @return false if failed to insert
      */
-    public boolean insertUser(RestHighLevelClient client, User user) throws IOException;
+    boolean insertUser(RestHighLevelClient client, User user) throws IOException;
+    
+    /**
+     * 
+     * @param user
+     * @return false if failed to update
+     * @throws IOException 
+     */
+    boolean updateUser(RestHighLevelClient client, User user) throws IOException;
 }
 
