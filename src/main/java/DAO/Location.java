@@ -1,12 +1,16 @@
 package DAO;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class Location {
     public String nameplace;
-    public String urlImg;
-    public String content;
+    public String map_name; //Sert d'ID
+    public ArrayList<String> urlImg;
+    public ArrayList<String> content;
     public LocalDateTime created;
+    public float longitude;
+    public float latitude;
     public boolean isFavorite=false;
     
     
@@ -34,7 +38,7 @@ public class Location {
      * @param nameplace
      * @param url 
      */
-    public Location(String nameplace, String url){
+    public Location(String nameplace, ArrayList<String> url){
         this.nameplace = nameplace;
         this.urlImg = url;
         this.created = LocalDateTime.now();
@@ -46,7 +50,7 @@ public class Location {
      * @param url
      * @param content 
      */
-    public Location(String nameplace, String url, String content){
+    public Location(String nameplace, ArrayList<String> url, ArrayList<String> content){
         this.nameplace = nameplace;
         this.urlImg = url;
         this.content = content;
@@ -57,7 +61,7 @@ public class Location {
      * 
      * @param content 
      */
-    public void setContent(String content){
+    public void setContent(ArrayList<String> content){
         this.content = content;
     }
     
@@ -73,7 +77,7 @@ public class Location {
      * 
      * @param url 
      */
-    public void setImage(String url){
+    public void setImage(ArrayList<String> url){
         this.urlImg = url;
     }
     
@@ -81,7 +85,7 @@ public class Location {
      * 
      * @return the content of the locations
      */
-    public String getContent(){
+    public ArrayList<String> getContent(){
         return this.content;
     }
     
@@ -97,7 +101,7 @@ public class Location {
      * 
      * @return the url of the location's image 
      */
-    public String getImage(){
+    public ArrayList<String> getImage(){
         return this.urlImg;
     }
     

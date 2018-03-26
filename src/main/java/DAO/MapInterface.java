@@ -1,38 +1,24 @@
 package DAO;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
+import org.elasticsearch.client.RestHighLevelClient;
 
 public interface MapInterface {
     /**
      * 
      * @return the list of all maps
      */
-    ArrayList<Map> getMaps();
+	ArrayList<Map> getMaps(RestHighLevelClient client) throws IOException;
     
     /**
      * @param user
      * @return the list of map of the user
      */
-    Map getMapById(String id);
+    Map getOneMap(RestHighLevelClient client, String name) throws IOException ;
     
-    /**
-     * @param user
-     * @return the list of map of the user
-     */
-    ArrayList<Map> getMapsByUser(User user);
-    
-    /**
-     * @param tokken
-     * @return the list of map including "tokken"
-     */
-    ArrayList<Map> getMapsByName(String tokken);
-    
-    /**
-     * @param username
-     * @return the list of maps thanks to the username
-     */
-    ArrayList<Map> getMapsByUsername(String username);
     
     /**
      * 
@@ -45,47 +31,35 @@ public interface MapInterface {
      * 
      * @return the list of public maps
      */
-    ArrayList<Map> getPublicMaps();
+    ArrayList<Map> getPublicMaps(RestHighLevelClient client) throws IOException;
     
     /**
      * @param username
      * @return the list of public maps of the specific user
      */
-    ArrayList<Map> getPublicMapsByUsername(String username);
-    
-    /**
-     * @param user
-     * @return the list of public maps of the specific user
-     */
-    ArrayList<Map> getPublicMapsByUser(User user);
-    
-    /**
-     * 
-     * @param user
-     * @return the list of maps of the specific user's friends
-     */
-    ArrayList<Map> getFriendsMapByUser(User user);
+    ArrayList<Map> getPublicMapsByUsername(RestHighLevelClient client, String username) throws IOException;
     
     /**
      * 
      * @param username
-     * @return the list of maps of the specific user's friends thanks to his name
+     * @return the list of maps of the specific user's friends, one list per friend
      */
-    ArrayList<Map> getFriendsMapByUsername(String username);
+    ArrayList<ArrayList<Map>> getFriendsMapByUsername(RestHighLevelClient client, String username) throws IOException;
     
     /**
      * create a new Map
      * @param mapname
-     * @return a new map with the specific name
+     * @return true if the request succeded, else false
      */
-    Map createMap(String mapname);
+    boolean createMap(RestHighLevelClient client, Map map) throws IOException;
     
     
     /**
      * 
      * @param map 
+     * @return true if the request succeded, else false
      */
-    void deleteMap(long id);
+    boolean deleteMap(RestHighLevelClient client, String map_name) throws IOException;
     
     
     

@@ -9,6 +9,10 @@ public class User{
 	public ArrayList<String> friendList; //Liste d'username
 	public ArrayList<String> mapList; // Liste de nom des maps (parce que y'a pas d'increment id)
     
+	public User()
+	{
+		
+	}
     /**
      * 
      * @param mail
@@ -96,7 +100,8 @@ public class User{
     
     @Override
     public String toString(){
-        return ""+this.mail+""+this.username;
+        return "Email : "+this.mail+", Username : "+this.username+", mdp : "+this.password
+        		+ ", friendList : "+this.friendList+", MapList : "+this.mapList;
     }
     
     /**
@@ -116,5 +121,6 @@ public class User{
     public void deleteMap(Map map){
         this.mapList.remove(map);
     }
+    
 
 }
