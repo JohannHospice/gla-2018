@@ -49,17 +49,6 @@ public class LocationDAO implements LocationInterface{
 
 	}
 
-	public ArrayList<Location> getDatedLocations(RestHighLevelClient client, Date date) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public ArrayList<Location> getDatedLocations(RestHighLevelClient client, Date date, Map map) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 
 	public boolean createLocation(RestHighLevelClient client, Location location,Map map) throws IOException
 	{
@@ -82,14 +71,5 @@ public class LocationDAO implements LocationInterface{
 		return true;
 	}
 
-	public ArrayList<Location> getFavoriteLocations(RestHighLevelClient client) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	public ArrayList<Location> getFavoriteLocations(RestHighLevelClient client, Location location, Map map) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 }
