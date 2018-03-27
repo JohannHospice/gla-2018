@@ -21,6 +21,8 @@ import org.elasticsearch.action.support.replication.ReplicationResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
@@ -259,7 +261,7 @@ public class MapDAO implements MapInterface{
 	}
 
 	public ArrayList<ArrayList<Map>> getFriendsMapByUsername(RestHighLevelClient client, String username) throws IOException{
-		ArrayList<String> friends = (new UserDAO()).getFriends(client, username);
+		ArrayList<String> friends = DAO.getActionUser().getOneUser(client, username).friendList;
 		ArrayList<ArrayList<Map>> maps = new ArrayList<ArrayList<Map>>();
 		for(String friend : friends)
 		{
@@ -328,6 +330,38 @@ public class MapDAO implements MapInterface{
 		
 		
 		return true;
+	}
+
+	public ArrayList<Map> searchMap(RestHighLevelClient client, String name, int from, int size) throws IOException {
+		ArrayList<Map> maps = new ArrayList<Map>();
+		
+		SearchRequest searchRequest = new SearchRequest("maps"); 
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
+		MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("name", name);
+		matchQueryBuilder.fuzziness(Fuzziness.AUTO); //Pour chercher un username proche 
+		searchSourceBuilder.query(matchQueryBuilder); 
+		searchSourceBuilder.from(from); 
+		searchSourceBuilder.size(size);
+		searchRequest.source(searchSourceBuilder);
+		
+		SearchResponse searchResponse = client.search(searchRequest);
+		SearchHits hits = searchResponse.getHits();
+		long totalHits = hits.getTotalHits();
+		float maxScore = hits.getMaxScore();
+		System.out.println("total : "+totalHits+", maxScore : "+maxScore);
+		
+		SearchHit[] searchHits = hits.getHits();
+		for (SearchHit hit : searchHits) {
+		    // do something with the SearchHit
+			//String index = hit.getId();
+			
+			String sourceAsString = hit.getSourceAsString();
+			Map map = new ObjectMapper().readValue(sourceAsString, Map.class);
+			
+			maps.add(map);
+		}
+		
+		return maps;
 	}
 
 }

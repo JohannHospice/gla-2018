@@ -85,4 +85,12 @@ public interface MapInterface {
      */
     boolean updateMap(RestHighLevelClient client, Map map) throws IOException;
     
+    /**
+     * 
+     * @param name, from, size
+     * @return return a list of maps corresponding to the name (not exact match) within the selected interval
+     * @throws IOException 
+     */
+    ArrayList<Map> searchMap(RestHighLevelClient client, String name, int from, int size) throws IOException;
+    
 }

@@ -30,14 +30,14 @@ public interface UserInterface {
      * @param username
      * @return the friendlist of the specific user
     */
-    ArrayList<String> getFriends(RestHighLevelClient client, String username) throws IOException;
+    ArrayList<User> getFriends(RestHighLevelClient client, String username) throws IOException;
     
     /**
      * 
      * @param username
      * @return all the user maps
      */
-    ArrayList<String> getMapsOfUser(RestHighLevelClient client, String username) throws IOException;
+    ArrayList<Map> getMapsOfUser(RestHighLevelClient client, String username) throws IOException;
     
     /**
      * 
@@ -53,5 +53,14 @@ public interface UserInterface {
      * @throws IOException 
      */
     boolean updateUser(RestHighLevelClient client, User user) throws IOException;
+    
+    /**
+     * 
+     * @param username, from, size
+     * @return return a list of user corresponding to the username (not exact match) within the selected interval
+     * @throws IOException 
+     */
+    ArrayList<User> searchUser(RestHighLevelClient client, String username, int from, int size) throws IOException;
+
 }
 
