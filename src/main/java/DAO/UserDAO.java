@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.get.GetRequest;
@@ -17,6 +16,8 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
@@ -118,20 +119,34 @@ public class UserDAO implements UserInterface{
 		return new ObjectMapper().readValue(sourceAsString, User.class);
 	}
 	
-	public ArrayList<String> getFriends(RestHighLevelClient client, String username) throws IOException{
-		return getOneUser(client,username).friendList;
+	public ArrayList<User> getFriends(RestHighLevelClient client, String username) throws IOException{
+		ArrayList<String> friends_name = getOneUser(client,username).friendList;
+		ArrayList<User> user = new ArrayList<User>();
+		for(String name: friends_name)
+		{
+			
+			user.add(getOneUser(client, name));
+		}
+		
+		return user;
 	}
 
 
-	public ArrayList<String> getMapsOfUser(RestHighLevelClient client, String username) throws IOException{
-		return getOneUser(client,username).mapList;
+	public ArrayList<Map> getMapsOfUser(RestHighLevelClient client, String username) throws IOException{
+		ArrayList<String> maps_name = getOneUser(client,username).mapList;
+		ArrayList<Map> maps = new ArrayList<Map>();
+		for(String name: maps_name)
+		{
+			maps.add(DAO.getActionMap().getOneMap(client, name));
+		}
+		return maps;
 	}
 	
 	public boolean insertUser(RestHighLevelClient client, User user) throws IOException
 	{
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		String json = ow.writeValueAsString(user);
-		Map<String, Object> jsonMap = new HashMap<String, Object>();
+		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
 		jsonMap.put("username", json);
 		
 		IndexRequest indexRequest = new IndexRequest("users", "doc",user.username)
@@ -147,7 +162,7 @@ public class UserDAO implements UserInterface{
 	
 	public boolean updateUser(RestHighLevelClient client, User user) throws IOException
 	{	
-		Map<String, Object> jsonMap = new HashMap<String, Object>();
+		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
 		jsonMap.put("mail", user.mail);
 		jsonMap.put("friendList", user.friendList);
 		jsonMap.put("mapList", user.mapList);
@@ -169,6 +184,38 @@ public class UserDAO implements UserInterface{
 		}
 		
 		return true;
+	}
+
+	public ArrayList<User> searchUser(RestHighLevelClient client, String username, int from, int size) throws IOException {
+		ArrayList<User> users = new ArrayList<User>();
+		
+		SearchRequest searchRequest = new SearchRequest("users"); 
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
+		MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("username", username);
+		matchQueryBuilder.fuzziness(Fuzziness.AUTO); //Pour chercher un username proche
+		searchSourceBuilder.query(matchQueryBuilder); 
+		searchSourceBuilder.from(from); 
+		searchSourceBuilder.size(size);
+		searchRequest.source(searchSourceBuilder);
+		
+		SearchResponse searchResponse = client.search(searchRequest);
+		SearchHits hits = searchResponse.getHits();
+		long totalHits = hits.getTotalHits();
+		float maxScore = hits.getMaxScore();
+		System.out.println("total : "+totalHits+", maxScore : "+maxScore);
+		
+		SearchHit[] searchHits = hits.getHits();
+		for (SearchHit hit : searchHits) {
+		    // do something with the SearchHit
+			//String index = hit.getId();
+			
+			String sourceAsString = hit.getSourceAsString();
+			User user = new ObjectMapper().readValue(sourceAsString, User.class);
+			
+			users.add(user);
+		}
+		
+		return users;
 	}
 
 }

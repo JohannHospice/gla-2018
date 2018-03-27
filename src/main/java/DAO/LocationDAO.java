@@ -36,9 +36,6 @@ public class LocationDAO implements LocationInterface{
 		
 		SearchHit[] searchHits = hits.getHits();
 		for (SearchHit hit : searchHits) {
-		    // do something with the SearchHit
-			//String index = hit.getId();
-			
 			String sourceAsString = hit.getSourceAsString();
 			Location location= new ObjectMapper().readValue(sourceAsString, Location.class);
 			
