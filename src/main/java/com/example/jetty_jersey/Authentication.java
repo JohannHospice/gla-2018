@@ -13,6 +13,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Password;
+import org.elasticsearch.client.RestHighLevelClient;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,13 +29,17 @@ import java.io.IOException;
 
 public class Authentication extends HttpServlet {
 
+	private RestHighLevelClient client = DAO.ClientConnection("0.0.0.0", 8080);
     @GET
     @Path("/mylogin")//({username}{password})
-    public Response login(@PathParam("username") String username, @PathParam("password") String password) {
-        User user = DAO.getActionUser().get(username, new Password(password));
+    public Response login(@PathParam("username") String username, @PathParam("password") String password) throws IOException {
+        User user = DAO.getActionUser().getOneUser(client, username);
         if (user != null) {
             // todo: add user to session
-            return Response.status(200).entity("user found").build();
+        	if(user.getPassword()==password)
+        		return Response.status(200).entity("user found").build();
+        	else
+        		return Response.status(Response.Status.NOT_FOUND).entity("Wrong password for username: " + username).build();
         }
         return Response.status(Response.Status.NOT_FOUND).entity("Resource not found for username: " + username).build();
 
