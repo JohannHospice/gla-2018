@@ -1,5 +1,7 @@
 package com.example.jetty_jersey;
 
+import org.eclipse.jetty.security.*;
+import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -54,7 +56,7 @@ public class JettyMain {
 
 		// Start server
 		server.start();
-
+		server.join();
 	}
 
 }
