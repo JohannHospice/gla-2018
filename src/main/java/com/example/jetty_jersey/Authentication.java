@@ -19,35 +19,40 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 
 public class Authentication extends HttpServlet {
+    private final static int PORT = 8080;
+    private final static String ip = "localhost";
+    private RestHighLevelClient client = DAO.ClientConnection(ip, PORT);
 
-	private RestHighLevelClient client = DAO.ClientConnection("0.0.0.0", 8080);
-    @GET
-    @Path("/mylogin")//({username}{password})
-    public Response login(@PathParam("username") String username, @PathParam("password") String password) throws IOException {
-        User user = DAO.getActionUser().getOneUser(client, username);
-        if (user != null) {
-            // todo: add user to session
-        	if(user.getPassword()==password)
-        		return Response.status(200).entity("user found").build();
-        	else
-        		return Response.status(Response.Status.NOT_FOUND).entity("Wrong password for username: " + username).build();
+    @POST
+    @Path("/login") // ({username}{password})
+    public Response login(@PathParam("username") String username, @PathParam("password") String password) {
+        try {
+            User user = DAO.getActionUser().getOneUser(client, username);
+            if (user != null) {
+                Password pwd = new Password(password);
+                if (user.getPassword() == pwd.toString()) {
+
+
+                    // todo: add user to session
+                    return Response.status(200).entity("user found").build();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return Response.status(Response.Status.NOT_FOUND).entity("Resource not found for username: " + username).build();
-
     }
 
 
     public static void main(String[] args) throws Exception {
-        Server server = new Server(8080);
+        Server server = new Server(PORT);
         ServletContextHandler context = new ServletContextHandler(server, "/", ServletContextHandler.SESSIONS | ServletContextHandler.SECURITY);
 
         context.addServlet(new ServletHolder(new DefaultServlet() {
