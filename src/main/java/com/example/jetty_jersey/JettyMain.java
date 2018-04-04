@@ -1,5 +1,7 @@
 package com.example.jetty_jersey;
 
+import org.eclipse.jetty.security.*;
+import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -8,7 +10,6 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -30,7 +31,6 @@ public class JettyMain {
 		ResourceConfig rc = new ResourceConfig();
 		rc.packages(true, "com.example.jetty_jersey.ws");
 		rc.register(JacksonFeature.class);
-		rc.register(LoggingFilter.class);
 
 		// Add a servlet handler for web services (/ws/*)
 		ServletHolder servletHolder = new ServletHolder(new ServletContainer(rc));
@@ -54,7 +54,7 @@ public class JettyMain {
 
 		// Start server
 		server.start();
-
+		server.join();
 	}
 
 }
