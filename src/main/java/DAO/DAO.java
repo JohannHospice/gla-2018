@@ -7,7 +7,7 @@ import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 
 public class DAO {
-
+	public static RestHighLevelClient client = null;
 	public static UserDAO getActionUser(){
 		return new UserDAO();
 	}
@@ -29,9 +29,14 @@ public class DAO {
 	 */
 	public static RestHighLevelClient ClientConnection(String ip, int port)
 	{
-		RestHighLevelClient client = new RestHighLevelClient(
-		        RestClient.builder(
-		                new HttpHost(ip, port, "http")));
+		if(client != null)
+		{
+			RestHighLevelClient client = new RestHighLevelClient(
+			        RestClient.builder(
+			                new HttpHost(ip, port, "http")));
+		}
+		else
+			System.out.println("Client déjà connecté");
 		
 		return client;
 	}
