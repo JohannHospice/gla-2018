@@ -1,0 +1,9 @@
+{
+  "template": "./src/main/webapp/common.html",
+  "list": [
+    {
+      "id": "index",
+      "title": "Testing webpack!"
+    }
+  ]
+}
