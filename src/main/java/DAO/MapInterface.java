@@ -7,6 +7,12 @@ import java.util.ArrayList;
 import org.elasticsearch.client.RestHighLevelClient;
 
 public interface MapInterface {
+	
+	/*
+	 * Create index map
+	 * 
+	 */
+	void createIndexMap() throws IOException;
     /**
      * 
      * @return the list of all maps

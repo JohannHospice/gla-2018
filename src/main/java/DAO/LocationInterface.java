@@ -7,6 +7,12 @@ import java.util.Date;
 import org.elasticsearch.client.RestHighLevelClient;
 
 public interface LocationInterface {
+	/*
+	 * Create index locations
+	 * 
+	 */
+	void createIndexLocation() throws IOException;
+	
     /**
      * 
      * @return the list of all locations 

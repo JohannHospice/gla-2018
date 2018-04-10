@@ -9,6 +9,7 @@ import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.DocWriteResponse;
+import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
@@ -216,6 +217,11 @@ public class UserDAO implements UserInterface{
 		}
 		
 		return users;
+	}
+
+	public void createIndexUser() throws IOException {
+		CreateIndexRequest request = new CreateIndexRequest("users");
+		
 	}
 
 }
