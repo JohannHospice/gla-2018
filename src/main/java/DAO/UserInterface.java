@@ -6,6 +6,13 @@ import java.util.ArrayList;
 import org.elasticsearch.client.RestHighLevelClient;
 
 public interface UserInterface {
+	
+	/*
+	 * Create index users
+	 * 
+	 */
+	void createIndexUser() throws IOException;
+	
     /**
      * 
      * @return the list of user

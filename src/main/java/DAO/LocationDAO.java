@@ -18,7 +18,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-public class LocationDAO implements LocationInterface{
+public class 	 implements LocationInterface{
 
 	public ArrayList<Location> getLocations(RestHighLevelClient client,  String map_name) throws IOException {
 		ArrayList<Location> locations = new ArrayList<Location>();
@@ -66,6 +66,12 @@ public class LocationDAO implements LocationInterface{
 			return false;
 		}
 		return true;
+	}
+
+
+	public void createIndexLocation() throws IOException {
+		CreateIndexRequest request = new CreateIndexRequest("locations");
+		
 	}
 
 
