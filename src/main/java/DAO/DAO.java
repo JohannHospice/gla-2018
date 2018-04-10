@@ -40,4 +40,8 @@ public class DAO {
 		
 		return client;
 	}
+	public static RestHighLevelClient getClient()
+	{
+		return client;
+	}
 }
