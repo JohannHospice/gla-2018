@@ -3,9 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+        //Lorsqu'on clique sur le bouton afficher
 
-var gulp = require('gulp');
-
-gulp.task('default', function () {
-    // place code for your default task here
-});
+      
+   
