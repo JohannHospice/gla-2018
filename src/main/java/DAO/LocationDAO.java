@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
@@ -18,7 +19,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-public class 	 implements LocationInterface{
+public class LocationDAO implements LocationInterface{
 
 	public ArrayList<Location> getLocations(RestHighLevelClient client,  String map_name) throws IOException {
 		ArrayList<Location> locations = new ArrayList<Location>();
