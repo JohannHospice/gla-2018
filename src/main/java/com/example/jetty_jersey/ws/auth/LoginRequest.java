@@ -1,4 +1,4 @@
-package auth;
+package com.example.jetty_jersey.ws.auth;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
