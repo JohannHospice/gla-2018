@@ -10,6 +10,7 @@ import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
@@ -145,6 +146,7 @@ public class UserDAO implements UserInterface{
 	
 	public boolean insertUser(RestHighLevelClient client, User user) throws IOException
 	{
+		OpenIndexRequest request = new OpenIndexRequest("users");
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		String json = ow.writeValueAsString(user);
 		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
