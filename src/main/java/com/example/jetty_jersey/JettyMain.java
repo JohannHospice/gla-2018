@@ -14,6 +14,8 @@ import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
+import DAO.DAO;
+
 public class JettyMain {
 
 	public static void main(String[] args) throws Exception {
@@ -26,7 +28,7 @@ public class JettyMain {
 		connector.setPort(8080);
 		connector.setIdleTimeout(30000);
 		server.addConnector(connector);
-
+		DAO.ClientConnection("0.0.0.0",8080);
 		// Configure Jersey
 		ResourceConfig rc = new ResourceConfig();
 		rc.packages(true, "com.example.jetty_jersey.ws");
@@ -40,9 +42,9 @@ public class JettyMain {
 
 		// Add a handler for resources (/*)
 		ResourceHandler handlerPortal = new ResourceHandler();
-		handlerPortal.setResourceBase("dist");
+		handlerPortal.setResourceBase("src/main/webapp/pages");
 		handlerPortal.setDirectoriesListed(false);
-		handlerPortal.setWelcomeFiles(new String[] { "index.html" });
+		handlerPortal.setWelcomeFiles(new String[] { "homepage.html" });
 		ContextHandler handlerPortalCtx = new ContextHandler();
 		handlerPortalCtx.setContextPath("/");
 		handlerPortalCtx.setHandler(handlerPortal);
