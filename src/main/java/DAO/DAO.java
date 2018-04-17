@@ -29,9 +29,9 @@ public class DAO {
 	 */
 	public static RestHighLevelClient ClientConnection(String ip, int port)
 	{
-		if(client != null)
+		if(client == null)
 		{
-			RestHighLevelClient client = new RestHighLevelClient(
+			client = new RestHighLevelClient(
 			        RestClient.builder(
 			                new HttpHost(ip, port, "http")));
 		}
