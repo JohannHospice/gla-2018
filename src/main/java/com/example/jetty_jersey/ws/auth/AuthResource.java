@@ -57,7 +57,7 @@ public class AuthResource {
                                  @FormParam("email") String email,
                                  @FormParam("password") String password,
                                  @FormParam("passwordConfirm") String passwordConfirm) {
-        if (httpRequest.getSession().getAttribute("user") != null) { //httpRequest.getUserPrincipal() == null) {
+        //if (httpRequest.getSession().getAttribute("user") != null) { //httpRequest.getUserPrincipal() == null) {
             try {
                 if (password.equals(passwordConfirm)) {
                     User user = new User();
@@ -65,13 +65,15 @@ public class AuthResource {
                     user.setPassword(password);
                     user.setUsername(username);
                     System.out.println(user);
+                    System.out.println("avant insert");
                     DAO.getActionUser().insertUser(DAO.client, user);
+                    System.out.println("après insert");
                     return new SimpleResponse(true);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        //}
         return new SimpleResponse(false);
     }
 
