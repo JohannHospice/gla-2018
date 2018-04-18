@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class Map {
     public String name="NoDefined"; //C'est l'id : nomdemap_username
-    public ArrayList<Location> locationList;
+    public ArrayList<String> locations;
     public LocalDateTime created;
     public ArrayList<String> privateUsers; //un username
     
@@ -39,19 +39,31 @@ public class Map {
     public void setName(String name){
         this.name = name;
     }
-    
-    /**
-     * 
-     */
-    public void setFavorite(){
-        isFavorite=true;
+    public String getName()
+    {
+    	return name;
     }
     
     /**
      * 
      */
-    public void setPrivate(){
+    public void setIsFavorite(){
+        isFavorite=true;
+    }
+    public boolean getIsFavorite()
+    {
+    	return isFavorite;
+    }
+    
+    /**
+     * 
+     */
+    public void setIsPublic(){
         isPublic=false;
+    }
+    public boolean getIsPublic()
+    {
+    	return isPublic;
     }
     
     /**
@@ -72,28 +84,53 @@ public class Map {
      * 
      * @param location 
      */
-    public void addLocation(Location location){
-        this.locationList.add(location);
+    public void addLocation(String idLocation){
+        this.locations.add(idLocation);
     }
     
     /**
      * 
      * @param location 
      */
-    public void removeLocation(Location location){
-        this.locationList.remove(location);
+    public void removeLocation(String idLocation){
+        this.locations.remove(idLocation);
+    }
+    public void setLocations(ArrayList<String> locations)
+    {
+    	this.locations = locations;
+    }
+    public ArrayList<String> getLocations()
+    {
+    	return this.locations;
+    }
+    public void setCreated(LocalDateTime created)
+    {
+    	this.created = created;
+    }
+    public LocalDateTime getCreated()
+    {
+    	return this.created;
+    }
+    public void setPrivateUsers(ArrayList<String> privateUsers)
+    {
+    	this.privateUsers = privateUsers;
+    }
+    public ArrayList<String> getPrivateUsers()
+    {
+    	return this.privateUsers;
     }
     
-    /**
-     * 
-     * @param user 
-     */
-    /*public void addPrivateUser(String user){
-        if(!this.user.equals(user)){
-            
-        this.privateUsers.add(user);
-        user.addMap(this.name);
-        }
-    }*/
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

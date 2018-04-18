@@ -122,7 +122,7 @@ public class UserDAO implements UserInterface{
 	}
 	
 	public ArrayList<User> getFriends(RestHighLevelClient client, String username) throws IOException{
-		ArrayList<String> friends_name = getOneUser(client,username).friendList;
+		ArrayList<String> friends_name = getOneUser(client,username).friends;
 		ArrayList<User> user = new ArrayList<User>();
 		for(String name: friends_name)
 		{
@@ -135,7 +135,7 @@ public class UserDAO implements UserInterface{
 
 
 	public ArrayList<Map> getMapsOfUser(RestHighLevelClient client, String username) throws IOException{
-		ArrayList<String> maps_name = getOneUser(client,username).mapList;
+		ArrayList<String> maps_name = getOneUser(client,username).maps;
 		ArrayList<Map> maps = new ArrayList<Map>();
 		for(String name: maps_name)
 		{
@@ -146,11 +146,12 @@ public class UserDAO implements UserInterface{
 	
 	public boolean insertUser(RestHighLevelClient client, User user) throws IOException
 	{
-		OpenIndexRequest request = new OpenIndexRequest("users");
-		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-		String json = ow.writeValueAsString(user);
 		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
-		jsonMap.put("username", json);
+		jsonMap.put("username", user.username);
+		jsonMap.put("password", user.password);
+		jsonMap.put("mail", user.mail);
+		jsonMap.put("friends", user.friends);
+		jsonMap.put("maps", user.maps);
 		
 		IndexRequest indexRequest = new IndexRequest("users", "doc",user.username)
 		        .source(jsonMap);
@@ -167,8 +168,8 @@ public class UserDAO implements UserInterface{
 	{	
 		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
 		jsonMap.put("mail", user.mail);
-		jsonMap.put("friendList", user.friendList);
-		jsonMap.put("mapList", user.mapList);
+		jsonMap.put("friends", user.friends);
+		jsonMap.put("maps", user.maps);
 		UpdateRequest request = new UpdateRequest("users", 
 		        "doc",  
 		        user.username)

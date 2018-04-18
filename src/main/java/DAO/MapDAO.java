@@ -257,7 +257,7 @@ public class MapDAO implements MapInterface{
 	}
 
 	public ArrayList<ArrayList<Map>> getFriendsMapByUsername(RestHighLevelClient client, String username) throws IOException{
-		ArrayList<String> friends = DAO.getActionUser().getOneUser(client, username).friendList;
+		ArrayList<String> friends = DAO.getActionUser().getOneUser(client, username).friends;
 		ArrayList<ArrayList<Map>> maps = new ArrayList<ArrayList<Map>>();
 		for(String friend : friends)
 		{
@@ -266,12 +266,15 @@ public class MapDAO implements MapInterface{
 		return maps;
 	}
 
-	public boolean createMap(RestHighLevelClient client, Map map) throws IOException{
-		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-		String json = ow.writeValueAsString(map);
-		
+	public boolean insertMap(RestHighLevelClient client, Map map) throws IOException{
 		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
-		jsonMap.put("map", json);
+		
+		jsonMap.put("name", map.name);
+		jsonMap.put("locations", map.locations);
+		jsonMap.put("created", map.created);
+		jsonMap.put("privateUsers", map.privateUsers);
+		jsonMap.put("isPublic", map.isPublic);
+		jsonMap.put("isFavorite", map.isFavorite);
 		
 		
 		IndexRequest indexRequest = new IndexRequest("maps", "doc",map.name)
@@ -305,8 +308,10 @@ public class MapDAO implements MapInterface{
 
 	public boolean updateMap(RestHighLevelClient client, Map map) throws IOException{
 		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
-		jsonMap.put("locationList", map.locationList);
+		jsonMap.put("locations", map.locations);
 		jsonMap.put("privateUsers", map.privateUsers);
+		jsonMap.put("isPublic", map.isPublic);
+		jsonMap.put("isFavorite", map.isFavorite);
 		UpdateRequest request = new UpdateRequest("maps", 
 		        "doc",  
 		        map.name)
@@ -323,8 +328,6 @@ public class MapDAO implements MapInterface{
 			System.out.println("La map "+map.name+ " n'a pas pu être mis à jour");
 			return false;
 		}
-		
-		
 		return true;
 	}
 

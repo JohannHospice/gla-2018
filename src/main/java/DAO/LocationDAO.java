@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -48,14 +51,17 @@ public class LocationDAO implements LocationInterface{
 	}
 
 
-	public boolean createLocation(RestHighLevelClient client, Location location,Map map) throws IOException
-	{
-		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-		String json = ow.writeValueAsString(map);
-		
+	public boolean insertLocation(RestHighLevelClient client, Location location,Map map) throws IOException
+	{	
 		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
-		jsonMap.put("location", json);
-		
+		jsonMap.put("nameplace", location.nameplace);
+		jsonMap.put("mapName", location.mapName);
+		jsonMap.put("urlImg", location.urlImg);
+		jsonMap.put("content", location.content);
+		jsonMap.put("created", location.created);
+		jsonMap.put("longitude", location.longitude);
+		jsonMap.put("latitude", location.latitude);
+		jsonMap.put("isFavorite", location.isFavorite);
 		
 		IndexRequest indexRequest = new IndexRequest("locations", "doc",map.name)
 		        .source(jsonMap);
@@ -68,7 +74,30 @@ public class LocationDAO implements LocationInterface{
 		}
 		return true;
 	}
-
+	
+	public boolean updateLocation(RestHighLevelClient client, Location location) throws IOException{
+		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
+		jsonMap.put("urlImg", location.urlImg);
+		jsonMap.put("content", location.content);
+		jsonMap.put("isFavorite", location.isFavorite);
+		UpdateRequest request = new UpdateRequest("maps", 
+		        "doc",  
+		        location.nameplace)
+		        .doc(jsonMap);
+		UpdateResponse updateResponse = client.update(request);
+		request.docAsUpsert(false);
+		
+		if (updateResponse.getResult() == DocWriteResponse.Result.UPDATED) {
+			System.out.println("La map "+location.nameplace+ " a été mis à jour");
+		} else if (updateResponse.getResult() == DocWriteResponse.Result.DELETED) {
+			System.out.println("La map "+location.nameplace+ " a été supprimé");
+			return false;
+		} else if (updateResponse.getResult() == DocWriteResponse.Result.NOOP) {
+			System.out.println("La map "+location.nameplace+ " n'a pas pu être mis à jour");
+			return false;
+		}
+		return true;
+	}
 
 	public void createIndexLocation() throws IOException {
 		CreateIndexRequest request = new CreateIndexRequest("locations");
