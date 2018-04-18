@@ -6,8 +6,8 @@ public class User{
 	public String mail;
 	public String password;
 	public String username;
-	public ArrayList<String> friendList; //Liste d'username
-	public ArrayList<String> mapList; // Liste de nom des maps (parce que y'a pas d'increment id)
+	public ArrayList<String> friends; //Liste d'username
+	public ArrayList<String> maps; // Liste de nom des maps (parce que y'a pas d'increment id)
     
 	public User()
 	{
@@ -84,24 +84,28 @@ public class User{
      * @param user
      */
     void addFriend(String user){
-        this.friendList.add(user);
+        this.friends.add(user);
     }
     
     public ArrayList<String> getMaps(){
-        return this.mapList;
+        return this.maps;
+    }
+    public void setMaps(ArrayList<String> maps)
+    {
+    	this.maps = maps;
     }
     
     /**
      * @param user 
      */
     void deleteFriend(User user){
-        this.friendList.remove(user);
+        this.friends.remove(user);
     }
     
     @Override
     public String toString(){
         return "Email : "+this.mail+", Username : "+this.username+", mdp : "+this.password
-        		+ ", friendList : "+this.friendList+", MapList : "+this.mapList;
+        		+ ", friendList : "+this.friends+", MapList : "+this.maps;
     }
     
     /**
@@ -109,9 +113,9 @@ public class User{
      * @param map 
      */
     public void addMap(String map){
-        if(mapList.contains(map))
+        if(maps.contains(map))
             return;
-        this.mapList.add(map);
+        this.maps.add(map);
     }
     
     /**
@@ -119,7 +123,7 @@ public class User{
      * @param map 
      */
     public void deleteMap(Map map){
-        this.mapList.remove(map);
+        this.maps.remove(map);
     }
     
 

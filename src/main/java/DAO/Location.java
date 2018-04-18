@@ -4,25 +4,81 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Location {
-    public String nameplace;
-    public String map_name; //Sert d'ID
+    public String nameplace;//C'est l'id : nomdelocation_nomdemap
+    public String mapName; 
     public ArrayList<String> urlImg;
     public ArrayList<String> content;
     public LocalDateTime created;
     public float longitude;
     public float latitude;
-    public boolean isFavorite=false;
+    public boolean isFavorite=false;    
     
+    
+    public void setNameplace(String nameplace)
+    {
+    	this.nameplace = nameplace;
+    }
+    public String getNameplace()
+    {
+    	return this.nameplace;
+    }
+    
+    public void setMapName(String mapName)
+    {
+    	this.mapName = mapName;
+    }
+    public String getMapName()
+    {
+    	return this.mapName;
+    }
+    public void setUrlImg(ArrayList<String> urlImg)
+    {
+    	this.urlImg = urlImg;
+    }
+    public ArrayList<String> getUrlImg()
+    {
+    	return this.urlImg;
+    }
+    
+    public void setContent(ArrayList<String> content){
+        this.content = content;
+    }
+    public ArrayList<String> getContent(){
+        return this.content;
+    }
+    
+    public void setLongitude(float longitude)
+    {
+    	this.longitude = longitude;
+    }
+    public float getLongitude()
+    {
+    	return this.longitude;
+    }
+    public void setLatitude(float latitude)
+    {
+    	this.latitude = latitude;
+    }
+    public float getLatitude()
+    {
+    	return this.latitude;
+    }
+    
+    public void setIsFavorite(){
+        isFavorite = true;
+    }
+    public boolean getIsFavorite()
+    {
+    	return this.isFavorite;
+    }
     
     /**
      * 
-     * @param map 
+     * @return the url of the location's image 
      */
-    /*public Location(Map map){
-        this.map = map;
-        this.created = LocalDateTime.now();
-    }   
-    */
+    public ArrayList<String> getImage(){
+        return this.urlImg;
+    }
     
     /**
      * 
@@ -57,60 +113,6 @@ public class Location {
         this.created = LocalDateTime.now();
     }
    
-    /**
-     * 
-     * @param content 
-     */
-    public void setContent(ArrayList<String> content){
-        this.content = content;
-    }
-    
-    /**
-     * 
-     * @param name 
-     */
-    public void setNamePlace(String name){
-        this.nameplace= name;
-    }
-    
-    /**
-     * 
-     * @param url 
-     */
-    public void setImage(ArrayList<String> url){
-        this.urlImg = url;
-    }
-    
-    /**
-     * 
-     * @return the content of the locations
-     */
-    public ArrayList<String> getContent(){
-        return this.content;
-    }
-    
-    /**
-     * 
-     * @return the name of location
-     */
-    public String getNamePlace(){
-        return this.nameplace;
-    }
-    
-    /**
-     * 
-     * @return the url of the location's image 
-     */
-    public ArrayList<String> getImage(){
-        return this.urlImg;
-    }
-    
-    /**
-     * 
-     */
-    public void setFavorite(){
-        isFavorite = true;
-    }
     
     /**
      * change the location attribute

@@ -25,6 +25,8 @@ public interface LocationInterface {
      * @param map, client
      * @return true if the location has been inserted into the DDB
      */
-    boolean createLocation(RestHighLevelClient client, Location location, Map map) throws IOException;
+    boolean insertLocation(RestHighLevelClient client, Location location, Map map) throws IOException;
+    
+    boolean updateLocation(RestHighLevelClient client, Location location) throws IOException;
     
 }

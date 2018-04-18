@@ -74,7 +74,7 @@ public interface MapInterface {
      * @param mapname
      * @return true if the request succeded, else false
      */
-    boolean createMap(RestHighLevelClient client, Map map) throws IOException;
+    boolean insertMap(RestHighLevelClient client, Map map) throws IOException;
     
     
     /**
