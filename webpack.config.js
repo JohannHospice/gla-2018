@@ -4,6 +4,7 @@ const fs = require('fs');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 let pages = require('./pages.json');
 
@@ -19,6 +20,10 @@ let plugins = _.map(pages.list, (page) => {
 plugins.push(new MiniCssExtractPlugin({
   filename: '[name].css'
 }));
+plugins.push(new CopyWebpackPlugin([{
+	from: pages.assets,
+	to: 'assets'
+}]));
 
 module.exports = {
   mode: 'production',

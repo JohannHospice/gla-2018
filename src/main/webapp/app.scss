@@ -1,5 +1,5 @@
 body{
-    background: #FFFFE0;
+    background: #FFFFE0 url(/assets/bg.jpg);
 }
 .navbar, .dropdown-menu{
 background:rgba(255,255,255,0.25);
@@ -120,4 +120,8 @@ border: none;
   color: #3596e0;
   left: initial;
   font-size: 14px;
+}
+
+li.menu-logout {
+	display: none;
 }
