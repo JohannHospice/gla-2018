@@ -1,9 +1,10 @@
 {
   "template": "./src/main/webapp/common.html",
+  "assets": "./src/main/webapp/assets",
   "list": [
     {
       "id": "index",
-      "title": "Testing webpack!"
+      "title": "Accueil"
     }
   ]
 }
