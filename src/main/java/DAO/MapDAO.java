@@ -110,7 +110,7 @@ public class MapDAO implements MapInterface{
 
 			if (getResponse.isExists()) {
 			    sourceAsString = getResponse.getSourceAsString();        
-			    System.out.println(sourceAsString+"\n");
+			    //System.out.println(sourceAsString+"\n");
 			} else {
 			    System.out.println("Impossible de trouver l'User "+name);
 			    return null;

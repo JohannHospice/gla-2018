@@ -104,8 +104,8 @@ public class User{
     
     @Override
     public String toString(){
-        return "Email : "+this.mail+", Username : "+this.username+", mdp : "+this.password
-        		+ ", friendList : "+this.friends+", MapList : "+this.maps;
+        return "|mail : "+this.mail+", username : "+this.username+", password : "+this.password
+        		+ ", friends : "+this.friends+", maps : "+this.maps+"\n";
     }
     
     /**

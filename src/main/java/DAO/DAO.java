@@ -17,7 +17,7 @@ public class DAO {
 		return new MapDAO();
 	}
 	
-	public static LocationDAO getActionDAO()
+	public static LocationDAO getActionLocation()
 	{
 		return new LocationDAO();
 	}

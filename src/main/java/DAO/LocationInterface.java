@@ -27,6 +27,8 @@ public interface LocationInterface {
      */
     boolean insertLocation(RestHighLevelClient client, Location location, Map map) throws IOException;
     
+    boolean insertLocationAndUpdateMap(RestHighLevelClient client, Location location,String map) throws IOException;
+    
     boolean updateLocation(RestHighLevelClient client, Location location) throws IOException;
     
 }

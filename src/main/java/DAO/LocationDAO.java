@@ -75,6 +75,33 @@ public class LocationDAO implements LocationInterface{
 		return true;
 	}
 	
+	public boolean insertLocationAndUpdateMap(RestHighLevelClient client, Location location,String map_name) throws IOException
+	{	
+		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
+		jsonMap.put("nameplace", location.nameplace);
+		jsonMap.put("mapName", location.mapName);
+		jsonMap.put("urlImg", location.urlImg);
+		jsonMap.put("content", location.content);
+		jsonMap.put("created", location.created);
+		jsonMap.put("longitude", location.longitude);
+		jsonMap.put("latitude", location.latitude);
+		jsonMap.put("isFavorite", location.isFavorite);
+		Map map = DAO.getActionMap().getOneMap(client, map_name);
+		map.addLocation(location.nameplace);
+		
+		IndexRequest indexRequest = new IndexRequest("locations", "doc",location.nameplace)
+		        .source(jsonMap);
+		
+		try {
+			IndexResponse indexResponse = client.index(indexRequest);
+			DAO.getActionMap().updateMap(client, map);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 	public boolean updateLocation(RestHighLevelClient client, Location location) throws IOException{
 		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
 		jsonMap.put("urlImg", location.urlImg);
