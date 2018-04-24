@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Request test</title>
+<body>
+<h4>Signup</h4>
+<form action="ws/auth/signup" method="post">
+    <input type="text" placeholder="username" name="username" required>
+    <input type="email" placeholder="email" name="email" required>
+    <input type="text" placeholder="password" name="password" required>
+    <input type="text" placeholder="passwordConfirm" name="passwordConfirm" required>
+    <input type="submit" value="Envoyer">
+</form>
+
+<h4>Login</h4>
+<form action="ws/auth/login" method="post">
+    <input type="text" placeholder="username" name="username" required>
+    <input type="text" placeholder="password" name="password" required>
+    <input type="submit" value="Envoyer">
+</form>
+
+<h4>Logout</h4>
+<form action="ws/auth/logout" method="post">
+    <input type="submit" value="Envoyer">
+</form>
+</body>

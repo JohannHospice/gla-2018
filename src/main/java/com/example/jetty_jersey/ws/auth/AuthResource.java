@@ -17,6 +17,7 @@ import java.io.IOException;
 @Path("/auth")
 public class AuthResource {
 
+
     @POST
     @Path("/user")
     @Produces(MediaType.APPLICATION_JSON)
@@ -30,6 +31,7 @@ public class AuthResource {
     public SimpleResponse login(@Context HttpServletRequest httpRequest,
                                 @FormParam("username") String username,
                                 @FormParam("password") String password) {
+
         System.out.println("in /login");
         try {
             User user = DAO.getActionUser().getOneUser(DAO.client, username);
@@ -38,8 +40,6 @@ public class AuthResource {
                 httpRequest.getSession().setAttribute("user", user);
                 return new SimpleResponse(true);
             }
-
-
             System.out.println("Mauvais mot de passe");
         } catch (IOException e) {
             e.printStackTrace();
@@ -57,37 +57,30 @@ public class AuthResource {
                                  @FormParam("email") String email,
                                  @FormParam("password") String password,
                                  @FormParam("passwordConfirm") String passwordConfirm) {
-        //if (httpRequest.getSession().getAttribute("user") != null) { //httpRequest.getUserPrincipal() == null) {
-            try {
-                if (password.equals(passwordConfirm)) {
-                    User user = new User();
-                    user.setMail(email);
-                    user.setPassword(password);
-                    user.setUsername(username);
-                    System.out.println(user);
-                    System.out.println("avant insert");
-                    DAO.getActionUser().insertUser(DAO.client, user);
-                    System.out.println("après insert");
-                    return new SimpleResponse(true);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            if (password.equals(passwordConfirm)) {
+                User user = new User();
+                user.setMail(email);
+                user.setPassword(password);
+                user.setUsername(username);
+                DAO.getActionUser().insertUser(DAO.client, user);
+                return new SimpleResponse(true);
             }
-        //}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return new SimpleResponse(false);
     }
 
     @POST
     @Path("/logout")
-    public void logout(@Context HttpServletRequest httpRequest) {
-        /*
-        try {
-            httpRequest.logout();
-        } catch (ServletException ex) {
-            Logger.getLogger(AuthResource.class.getName()).log(Level.SEVERE, null, ex);
+    @Produces(MediaType.APPLICATION_JSON)
+    public SimpleResponse logout(@Context HttpServletRequest httpRequest) {
+        if (httpRequest.getSession().getAttribute("username") != null) {
+            httpRequest.getSession().removeAttribute("user");
+            return new SimpleResponse(true);
         }
-        */
-        httpRequest.getSession().removeAttribute("user");
+        return new SimpleResponse(false);
     }
 
 }
