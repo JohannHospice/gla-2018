@@ -1,7 +1,6 @@
 package com.example.jetty_jersey.ws;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import javax.ws.rs.Consumes;
@@ -17,17 +16,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.elasticsearch.client.RestHighLevelClient;
-
 import DAO.DAO;
-import DAO.User;
+import DAO.Location;
 import DAO.Map;
 
 @Path("/map")
 public class MapResource{
 
-	private RestHighLevelClient client = DAO.ClientConnection("0.0.0.0", 8080);
-	
 	/**
 	 * 
 	 * @return
@@ -38,7 +33,7 @@ public class MapResource{
 	@Path("/all")
 	public ArrayList<Map> getMaps() throws IOException {
 
-		return DAO.getActionMap().getMaps(client);
+		return DAO.getActionMap().getMaps(DAO.client);
 	}
 	
 	
@@ -52,7 +47,7 @@ public class MapResource{
 	@Path("/public")
 	public ArrayList<Map> getPublicMaps() throws IOException {
 
-		return DAO.getActionMap().getPublicMaps(client);
+		return DAO.getActionMap().getPublicMaps(DAO.client);
 	}
 	
 	/**
@@ -66,7 +61,7 @@ public class MapResource{
 	@Path("/{mapname}")
 	public Map getUsersMap(@PathParam("mapname") String mapname) throws IOException {
 		
-		return DAO.getActionMap().getOneMap(client,mapname);
+		return DAO.getActionMap().getOneMap(DAO.client,mapname);
 	}
 	
 	/**
@@ -79,7 +74,7 @@ public class MapResource{
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{mapname}")
 	public Response deleteMap(@PathParam("mapname") String mapname) throws IOException {
-		boolean success = DAO.getActionMap().deleteMap(client,mapname);
+		boolean success = DAO.getActionMap().deleteMap(DAO.client,mapname);
 		return (success)?Response.status(Response.Status.ACCEPTED).build():Response.status(Response.Status.NOT_MODIFIED).build();
 	}
 	
@@ -93,9 +88,9 @@ public class MapResource{
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{mapname}")
 	public Map setUsersMap(@PathParam("mapname") String mapname) throws IOException {
-		Map map = DAO.getActionMap().getOneMap(client, mapname);
-		boolean success = DAO.getActionMap().updateMap(client, map);
-		return (success)? DAO.getActionMap().getOneMap(client, mapname):map;
+		Map map = DAO.getActionMap().getOneMap(DAO.client, mapname);
+		boolean success = DAO.getActionMap().updateMap(DAO.client, map);
+		return (success)? DAO.getActionMap().getOneMap(DAO.client, mapname):map;
 	}
 	
 	/**
@@ -109,7 +104,7 @@ public class MapResource{
 	@Path("/public")
 	public ArrayList<Map> searchMap(@QueryParam("tokken") String tokken) throws IOException {
 		
-		return DAO.getActionMap().searchMap(client, tokken, 0, 10);
+		return DAO.getActionMap().searchMap(DAO.client, tokken, 0, 10);
 	}
 	
 	/**
@@ -127,9 +122,17 @@ public class MapResource{
 		/*
 		 * Utiliser les données de leaflet pr modifier et ajouter des éléments a la Map via une méthode
 		 */
-		
-		boolean success = DAO.getActionMap().createMap(client,newMap);
+
+		boolean success = DAO.getActionMap().insertMap(DAO.client,newMap);
 		return newMap;
+	}
+
+
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/{mapname}/addlocation")
+	public boolean createLocation(@PathParam("mapname") String mapname, @FormParam("nameplace") String nameplace, @FormParam("latitude") float latitude, @FormParam("longitude") float longitude) throws IOException {
+		return DAO.getActionLocation().insertLocationAndUpdateMap(DAO.client, new Location(nameplace, latitude, longitude), mapname);
 	}
 	
 	
