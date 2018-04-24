@@ -107,7 +107,7 @@ public class UserDAO implements UserInterface{
 
 			if (getResponse.isExists()) {
 			    sourceAsString = getResponse.getSourceAsString();        
-			    System.out.println(sourceAsString+"\n");
+			    //System.out.println(sourceAsString+"\n");
 			} else {
 			    System.out.println("Impossible de trouver l'User "+username);
 			    return null;
@@ -157,6 +157,12 @@ public class UserDAO implements UserInterface{
 		        .source(jsonMap);
 		try {
 			IndexResponse indexResponse = client.index(indexRequest);
+			if (indexResponse.getResult() == DocWriteResponse.Result.CREATED) {
+				System.out.println("user "+user.username+" créé");
+			}
+			else if (indexResponse.getResult() == DocWriteResponse.Result.UPDATED) {
+				System.out.println("user "+user.username+" update dans insertUser (pas normal)");
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
