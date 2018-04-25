@@ -7,12 +7,21 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public class Ressource {
+    class AuthException extends Exception {
+        public AuthException(String msg) {
+            super(msg);
+        }
+    }
 
-    public User getUserBySession(HttpServletRequest httpRequest) throws IOException {
+    public User getUserBySession(HttpServletRequest httpRequest) throws AuthException {
         String username = (String) httpRequest.getSession().getAttribute("username");
         if (username == null)
-            throw new IOException("theres no user in session");
+            throw new AuthException("user not in session");
 
-        return DAO.getActionUser().getOneUser(DAO.client, username);
+        try {
+            return DAO.getActionUser().getOneUser(DAO.client, username);
+        } catch (IOException e) {
+            throw new AuthException("user doesnot exist");
+        }
     }
 }
