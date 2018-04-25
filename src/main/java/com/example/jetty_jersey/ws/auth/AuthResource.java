@@ -2,20 +2,18 @@ package com.example.jetty_jersey.ws.auth;
 
 import DAO.DAO;
 import DAO.User;
+import com.example.jetty_jersey.ws.Ressource;
 
 import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 
 @PermitAll
 @Path("/auth")
-public class AuthResource {
+public class AuthResource extends Ressource{
 
 
     @POST
@@ -48,7 +46,7 @@ public class AuthResource {
     }
 
 
-    @POST
+    @PUT
     @Path("/signup")
     @Produces(MediaType.APPLICATION_JSON)
     // @Consumes(MediaType.APPLICATION_FORM_URLENCODED)

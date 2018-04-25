@@ -1,7 +1,6 @@
 package com.example.jetty_jersey.ws;
 
 import DAO.DAO;
-import DAO.Location;
 import DAO.Map;
 import DAO.User;
 
@@ -105,13 +104,18 @@ public class MapResource extends Ressource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/add")
     public Map createMap(@Context HttpServletRequest httpRequest, @FormParam("mapname") String mapname) throws IOException {
-        User user = getUserBySession(httpRequest);
-        user.addMap(mapname);
-        Map map = new Map(mapname);
+        try {
+            User user = getUserBySession(httpRequest);
+            user.addMap(mapname);
+            Map map = new Map(mapname);
 
-        DAO.getActionMap().insertMap(DAO.client, map);
-        DAO.getActionUser().updateUser(DAO.client, user);
-        return map;
+            DAO.getActionMap().insertMap(DAO.client, map);
+            DAO.getActionUser().updateUser(DAO.client, user);
+            return map;
+        } catch (AuthException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
@@ -119,13 +123,17 @@ public class MapResource extends Ressource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/share")
     public boolean shareMap(@Context HttpServletRequest httpRequest, @FormParam("mapname") String mapname, @FormParam("username") String username) throws IOException {
-        User user = getUserBySession(httpRequest);
+        try {
+            User user = getUserBySession(httpRequest);
 
-        Map map = DAO.getActionMap().getOneMap(DAO.client, mapname);
-        if (user.getMaps().contains(map.getName())) {
-            User otherUser = DAO.getActionUser().getOneUser(DAO.client, username);
-            map.privateUsers.add(otherUser.getUsername());
-            return true;
+            Map map = DAO.getActionMap().getOneMap(DAO.client, mapname);
+            if (user.getMaps().contains(map.getName())) {
+                User otherUser = DAO.getActionUser().getOneUser(DAO.client, username);
+                map.privateUsers.add(otherUser.getUsername());
+                return true;
+            }
+        } catch (AuthException e) {
+            e.printStackTrace();
         }
         return false;
     }
