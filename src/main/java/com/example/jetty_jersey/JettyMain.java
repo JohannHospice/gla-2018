@@ -25,7 +25,7 @@ public class JettyMain {
 		// Add a connector
 		ServerConnector connector = new ServerConnector(server);
 		connector.setHost("127.0.0.1");
-		connector.setPort(8081);
+		connector.setPort(8080);
 		connector.setIdleTimeout(30000);
 		server.addConnector(connector);
 		DAO.ClientConnection("127.0.0.1", 9200);
