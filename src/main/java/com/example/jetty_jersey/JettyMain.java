@@ -28,11 +28,7 @@ public class JettyMain {
 		connector.setPort(8081);
 		connector.setIdleTimeout(30000);
 		server.addConnector(connector);
-<<<<<<< HEAD
-		DAO.ClientConnection("127.0.0.1",9200);
-=======
 		DAO.ClientConnection("127.0.0.1", 9200);
->>>>>>> eb4e12b9b9fba42bf6d5229a2052384a95cb2b75
 		// Configure Jersey
 		ResourceConfig rc = new ResourceConfig();
 		rc.packages(true, "com.example.jetty_jersey.ws");
