@@ -2,20 +2,19 @@ package com.example.jetty_jersey.ws.auth;
 
 import DAO.DAO;
 import DAO.User;
+import com.example.jetty_jersey.ws.Ressource;
 
 import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 
 @PermitAll
 @Path("/auth")
-public class AuthResource {
+public class AuthResource extends Ressource{
+
 
     @POST
     @Path("/user")
@@ -30,6 +29,7 @@ public class AuthResource {
     public SimpleResponse login(@Context HttpServletRequest httpRequest,
                                 @FormParam("username") String username,
                                 @FormParam("password") String password) {
+
         System.out.println("in /login");
         try {
             User user = DAO.getActionUser().getOneUser(DAO.client, username);
@@ -38,8 +38,6 @@ public class AuthResource {
                 httpRequest.getSession().setAttribute("user", user);
                 return new SimpleResponse(true);
             }
-
-
             System.out.println("Mauvais mot de passe");
         } catch (IOException e) {
             e.printStackTrace();
@@ -48,7 +46,7 @@ public class AuthResource {
     }
 
 
-    @POST
+    @PUT
     @Path("/signup")
     @Produces(MediaType.APPLICATION_JSON)
     // @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -57,37 +55,30 @@ public class AuthResource {
                                  @FormParam("email") String email,
                                  @FormParam("password") String password,
                                  @FormParam("passwordConfirm") String passwordConfirm) {
-        //if (httpRequest.getSession().getAttribute("user") != null) { //httpRequest.getUserPrincipal() == null) {
-            try {
-                if (password.equals(passwordConfirm)) {
-                    User user = new User();
-                    user.setMail(email);
-                    user.setPassword(password);
-                    user.setUsername(username);
-                    System.out.println(user);
-                    System.out.println("avant insert");
-                    DAO.getActionUser().insertUser(DAO.client, user);
-                    System.out.println("après insert");
-                    return new SimpleResponse(true);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            if (password.equals(passwordConfirm)) {
+                User user = new User();
+                user.setMail(email);
+                user.setPassword(password);
+                user.setUsername(username);
+                DAO.getActionUser().insertUser(DAO.client, user);
+                return new SimpleResponse(true);
             }
-        //}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return new SimpleResponse(false);
     }
 
     @POST
     @Path("/logout")
-    public void logout(@Context HttpServletRequest httpRequest) {
-        /*
-        try {
-            httpRequest.logout();
-        } catch (ServletException ex) {
-            Logger.getLogger(AuthResource.class.getName()).log(Level.SEVERE, null, ex);
+    @Produces(MediaType.APPLICATION_JSON)
+    public SimpleResponse logout(@Context HttpServletRequest httpRequest) {
+        if (httpRequest.getSession().getAttribute("username") != null) {
+            httpRequest.getSession().removeAttribute("user");
+            return new SimpleResponse(true);
         }
-        */
-        httpRequest.getSession().removeAttribute("user");
+        return new SimpleResponse(false);
     }
 
 }
