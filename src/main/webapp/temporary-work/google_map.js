@@ -88,14 +88,14 @@
  	 	'<form action="myServer" method="post">'+
   			'<div>'+
         		'<label for="place">Place :</label>'+
-        		'<input type="text" id="place" name="user_place">'+
+        		'<input type="text" id="place" name="user_place" >'+
     		'</div>'+
     		'<div>'+
         		'<label for="tag"> #tag :</label>'+
         		'<input type="tag" id="tag" name="user_tag">'+
     		'</div>'+
     		'<button type="button" id="submit" onClick="toSubmit">submit</button> '+
-			'<button type="button" id="cancel" onClick="toCancel">cancel</button> '+
+			'<button type="reset" id="cancel" onClick="toCancel">cancel</button> '+
 			'<input type="file">'+'<br>'+
 			'<img src="" height="200" alt="Image preview...">'+
 		'</form>'
@@ -130,10 +130,7 @@
     	function toSubmit(){
     	
    		}
-    	//function toCancel()
-    	function toCancel(){
-    	
-    	}
+    
 	
  
 
