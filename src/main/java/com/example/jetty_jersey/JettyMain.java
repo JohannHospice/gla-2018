@@ -24,11 +24,11 @@ public class JettyMain {
 
 		// Add a connector
 		ServerConnector connector = new ServerConnector(server);
-		connector.setHost("0.0.0.0");
-		connector.setPort(8080);
+		connector.setHost("127.0.0.1");
+		connector.setPort(8081);
 		connector.setIdleTimeout(30000);
 		server.addConnector(connector);
-		DAO.ClientConnection("0.0.0.0",8080);
+		DAO.ClientConnection("127.0.0.1",9200);
 		// Configure Jersey
 		ResourceConfig rc = new ResourceConfig();
 		rc.packages(true, "com.example.jetty_jersey.ws");
@@ -42,9 +42,9 @@ public class JettyMain {
 
 		// Add a handler for resources (/*)
 		ResourceHandler handlerPortal = new ResourceHandler();
-		handlerPortal.setResourceBase("dist");
+		handlerPortal.setResourceBase("src/main/webapp/temporary-work");
 		handlerPortal.setDirectoriesListed(false);
-		handlerPortal.setWelcomeFiles(new String[] { "index.html" });
+		handlerPortal.setWelcomeFiles(new String[] { "homepage.html" });
 		ContextHandler handlerPortalCtx = new ContextHandler();
 		handlerPortalCtx.setContextPath("/");
 		handlerPortalCtx.setHandler(handlerPortal);

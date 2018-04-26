@@ -41,33 +41,27 @@ public interface MapInterface {
     
     /**
      * 
-     * @return the list of public maps
+     * @return the list of public maps following an interval
      */
     ArrayList<Map> getPublicMaps(RestHighLevelClient client) throws IOException;
-    
     /**
      * 
      * @return the list of public maps following an interval
      */
     ArrayList<Map> getPublicMaps(RestHighLevelClient client, int from, int size) throws IOException;
-    /**
-     * @param username
-     * @return the list of public maps of the specific user
-     */
-    ArrayList<Map> getPublicMapsByUsername(RestHighLevelClient client, String username) throws IOException;
-    
+
     /**
      * @param username
      * @return the list of public maps of the specific user following an interval
      */
-    ArrayList<Map> getPublicMapsByUsername(RestHighLevelClient client, String username, int from, int size) throws IOException;
+    ArrayList<Map> getPublicMapsByUsername(RestHighLevelClient client, String username, int from, int size, boolean only_public, boolean only_private) throws IOException;
     
     /**
      * 
      * @param username
      * @return the list of maps of the specific user's friends, one list per friend
      */
-    ArrayList<ArrayList<Map>> getFriendsMapByUsername(RestHighLevelClient client, String username) throws IOException;
+    ArrayList<ArrayList<Map>> getFriendsMapByUsername(RestHighLevelClient client, String username, int from, int size) throws IOException;
     
     /**
      * create a new Map
