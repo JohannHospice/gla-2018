@@ -11,7 +11,7 @@ public interface LocationInterface {
 	 * Create index locations
 	 * 
 	 */
-	void createIndexLocation() throws IOException;
+	void createIndexLocation(RestHighLevelClient client) throws IOException;
 	
     /**
      * 

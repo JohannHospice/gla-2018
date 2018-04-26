@@ -11,6 +11,7 @@ import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -363,8 +364,9 @@ public class MapDAO implements MapInterface{
 		return maps;
 	}
 
-	public void createIndexMap() throws IOException {
+	public void createIndexMap(RestHighLevelClient client) throws IOException {
 		CreateIndexRequest request = new CreateIndexRequest("maps");
+		CreateIndexResponse createIndexResponse = client.indices().create(request);
 		
 	}
 
