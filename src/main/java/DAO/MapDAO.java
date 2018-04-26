@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -269,13 +270,16 @@ public class MapDAO implements MapInterface{
 		
 		
 		IndexRequest indexRequest = new IndexRequest("maps", "doc",map.name)
-		        .source(jsonMap);
+		        .source(jsonMap)
+		        .opType(DocWriteRequest.OpType.CREATE);
 		
 		try {
 			IndexResponse indexResponse = client.index(indexRequest);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
+		} catch(ElasticsearchException e) {
+		    if (e.status() == RestStatus.CONFLICT) {
+		        System.out.println("insert ne fonctionne pas (la map existe déjà ?)");
+		        return false;
+		    }
 		}
 		return true;
 	}

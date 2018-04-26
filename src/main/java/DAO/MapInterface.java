@@ -66,7 +66,7 @@ public interface MapInterface {
     /**
      * create a new Map
      * @param mapname
-     * @return true if the request succeded, else false
+     * @return true if the map was inserted, else false (already existing).
      */
     boolean insertMap(RestHighLevelClient client, Map map) throws IOException;
     
