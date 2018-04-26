@@ -117,3 +117,6 @@ body {
 li.menu-logout {
   display: none; }
 
+div.overlay {
+  display: none; }
+
