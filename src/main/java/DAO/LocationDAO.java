@@ -117,7 +117,7 @@ public class LocationDAO implements LocationInterface{
 		jsonMap.put("urlImg", location.urlImg);
 		jsonMap.put("content", location.content);
 		jsonMap.put("isFavorite", location.isFavorite);
-		UpdateRequest request = new UpdateRequest("maps", 
+		UpdateRequest request = new UpdateRequest("locations", 
 		        "doc",  
 		        location.nameplace)
 		        .doc(jsonMap);
@@ -137,8 +137,15 @@ public class LocationDAO implements LocationInterface{
 	}
 
 	public void createIndexLocation(RestHighLevelClient client) throws IOException {
-		CreateIndexRequest request = new CreateIndexRequest("locations");
-		CreateIndexResponse createIndexResponse = client.indices().create(request);
+		try
+		{
+			CreateIndexRequest request = new CreateIndexRequest("locations");
+			CreateIndexResponse createIndexResponse = client.indices().create(request);
+		}
+		catch(Exception e)
+		{
+			System.out.println("l'index users existe déjà");
+		}
 	}
 
 

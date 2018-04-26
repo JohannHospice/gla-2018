@@ -234,8 +234,14 @@ public class UserDAO implements UserInterface{
 	}
 
 	public void createIndexUser(RestHighLevelClient client) throws IOException {
-		CreateIndexRequest request = new CreateIndexRequest("users");
-		CreateIndexResponse createIndexResponse = client.indices().create(request);
+		try {
+			CreateIndexRequest request = new CreateIndexRequest("users");
+			CreateIndexResponse createIndexResponse = client.indices().create(request);
+		}catch(Exception e)
+		{
+			System.out.println("l'index users existe déjà");
+		}
+		
 	}
 
 }
