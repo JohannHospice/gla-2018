@@ -4,7 +4,11 @@
   "list": [
     {
       "id": "index",
-      "title": "Accueil"
+      "title": "Homepage"
+    },
+    {
+      "id": "profile",
+      "title": "Profile"
     }
   ]
 }
