@@ -28,12 +28,10 @@ public class JettyMain {
 		connector.setPort(8080);
 		connector.setIdleTimeout(30000);
 		server.addConnector(connector);
-		try {
-			DAO.ClientConnection("127.0.0.1", 9200);
-			DAO.getActionUser().createIndexUser(DAO.getClient());
-			DAO.getActionMap().createIndexMap(DAO.getClient());
-			DAO.getActionLocation().createIndexLocation(DAO.getClient());
-		} catch (Exception ignore) {}
+		DAO.ClientConnection("127.0.0.1", 9200);
+		DAO.getActionUser().createIndexUser(DAO.getClient());
+		DAO.getActionMap().createIndexMap(DAO.getClient());
+		DAO.getActionLocation().createIndexLocation(DAO.getClient());
 		// Configure Jersey
 		ResourceConfig rc = new ResourceConfig();
 		rc.packages(true, "com.example.jetty_jersey.ws");
