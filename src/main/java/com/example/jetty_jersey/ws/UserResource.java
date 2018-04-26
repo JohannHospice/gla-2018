@@ -61,7 +61,7 @@ public class UserResource extends Ressource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/by-name/{username}")
     public ArrayList<Map> getUserMaps(@PathParam("username") String username) throws IOException {
-        return DAO.getActionMap().getPublicMapsByUsername(DAO.client, username);
+        return DAO.getActionMap().getPublicMapsByUsername(DAO.client, username,0,10,true,false);
     }
     
     
