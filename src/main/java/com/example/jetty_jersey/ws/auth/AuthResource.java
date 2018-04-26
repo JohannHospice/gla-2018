@@ -74,7 +74,7 @@ public class AuthResource extends Ressource{
     @Path("/logout")
     @Produces(MediaType.APPLICATION_JSON)
     public SimpleResponse logout(@Context HttpServletRequest httpRequest) {
-        if (httpRequest.getSession().getAttribute("username") != null) {
+        if (httpRequest.getSession().getAttribute("user") != null) {
             httpRequest.getSession().removeAttribute("user");
             return new SimpleResponse(true);
         }
