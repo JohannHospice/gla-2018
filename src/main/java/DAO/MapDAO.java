@@ -365,8 +365,16 @@ public class MapDAO implements MapInterface{
 	}
 
 	public void createIndexMap(RestHighLevelClient client) throws IOException {
-		CreateIndexRequest request = new CreateIndexRequest("maps");
-		CreateIndexResponse createIndexResponse = client.indices().create(request);
+		
+		try
+		{
+			CreateIndexRequest request = new CreateIndexRequest("maps");
+			CreateIndexResponse createIndexResponse = client.indices().create(request);
+		}catch(Exception e)
+		{
+			System.out.println("l'index users existe déjà");
+		}
+		
 		
 	}
 
