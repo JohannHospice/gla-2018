@@ -322,11 +322,15 @@ public class MapDAO implements MapInterface{
 		return true;
 	}
 
-	public ArrayList<Map> searchMap(RestHighLevelClient client, String name, int from, int size) throws IOException {
+	public ArrayList<Map> searchMap(RestHighLevelClient client, String name, int from, int size, boolean only_public, boolean only_private) throws IOException {
 		ArrayList<Map> maps = new ArrayList<Map>();
 		
 		SearchRequest searchRequest = new SearchRequest("maps"); 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
+		if(only_public && !only_private)
+			searchSourceBuilder.query(QueryBuilders.termQuery("isPublic", "true"));
+		if(only_private && !only_public)
+			searchSourceBuilder.query(QueryBuilders.termQuery("isPublic", "false"));
 		MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("name", name);
 		matchQueryBuilder.fuzziness(Fuzziness.AUTO); //Pour chercher un username proche 
 		matchQueryBuilder.maxExpansions(5);
