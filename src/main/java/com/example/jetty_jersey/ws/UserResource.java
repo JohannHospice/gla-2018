@@ -129,6 +129,7 @@ public class UserResource extends Ressource {
         User friend = DAO.getActionUser().getOneUser(DAO.client, friendName);
         if (friend != null) {
             user.friends.add(user.getUsername());
+            DAO.getActionUser().updateUser(DAO.client, user);
             return true;
         }
         return false;
