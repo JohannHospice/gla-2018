@@ -1,23 +1,15 @@
 const $ = require('jquery');
-const _ = require('underscore');
 
-const { showLogin, showRegister, hideOverlay } = require('../overlay.js');
+const { onLogin, showLogin, showRegister, hideOverlay } = require('../overlay.js');
 
-let get = (url, callback) => {
+const showMaps = (user) => {
   $.ajax({
-    url: url,
-    dataType: 'json',
-  }).done(callback).fail((err) => {
-    console.log(err);
-  });
-}
+    url: '/ws/map/public',
+  }).always(console.log);
+};
 
-let main = () => {
-  showRegister();
-  /*get('ws/user/all', (data, _status, xhr) => {
-    console.log(data, xhr);
-    $('div.app').html(tpl(data));
-  });*/
+const main = () => {
+  onLogin(showMaps, showRegister);
 }
 
 module.exports = {
