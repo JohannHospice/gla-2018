@@ -329,6 +329,7 @@ public class MapDAO implements MapInterface{
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
 		MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("name", name);
 		matchQueryBuilder.fuzziness(Fuzziness.AUTO); //Pour chercher un username proche 
+		matchQueryBuilder.maxExpansions(5);
 		searchSourceBuilder.query(matchQueryBuilder); 
 		searchSourceBuilder.from(from); 
 		searchSourceBuilder.size(size);
