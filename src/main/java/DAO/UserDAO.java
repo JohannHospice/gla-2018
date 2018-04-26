@@ -152,11 +152,14 @@ public class UserDAO implements UserInterface{
 		jsonMap.put("mail", user.mail);
 		jsonMap.put("friends", user.friends);
 		jsonMap.put("maps", user.maps);
-		
+		System.out.println("insertUser");
 		IndexRequest indexRequest = new IndexRequest("users", "doc",user.username)
 		        .source(jsonMap);
+		
 		try {
+			indexRequest.create(true);
 			IndexResponse indexResponse = client.index(indexRequest);
+			System.out.println("insertUser 222");
 			if (indexResponse.getResult() == DocWriteResponse.Result.CREATED) {
 				System.out.println("user "+user.username+" créé");
 			}
