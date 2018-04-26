@@ -8,6 +8,7 @@ import java.util.HashMap;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
@@ -152,23 +153,21 @@ public class UserDAO implements UserInterface{
 		jsonMap.put("mail", user.mail);
 		jsonMap.put("friends", user.friends);
 		jsonMap.put("maps", user.maps);
-		System.out.println("insertUser");
 		IndexRequest indexRequest = new IndexRequest("users", "doc",user.username)
-		        .source(jsonMap);
+		        .source(jsonMap)
+		        .opType(DocWriteRequest.OpType.CREATE);
 		
 		try {
 			indexRequest.create(true);
 			IndexResponse indexResponse = client.index(indexRequest);
-			System.out.println("insertUser 222");
 			if (indexResponse.getResult() == DocWriteResponse.Result.CREATED) {
 				System.out.println("user "+user.username+" créé");
 			}
-			else if (indexResponse.getResult() == DocWriteResponse.Result.UPDATED) {
-				System.out.println("user "+user.username+" update dans insertUser (pas normal)");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
+		} catch(ElasticsearchException e) {
+		    if (e.status() == RestStatus.CONFLICT) {
+		        System.out.println("insert ne fonctionne pas (l'user existe déjà ?)");
+		        return false;
+		    }
 		}
 		return true;
 	}

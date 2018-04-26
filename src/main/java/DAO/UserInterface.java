@@ -49,7 +49,7 @@ public interface UserInterface {
     /**
      * 
      * @param user
-     * @return false if failed to insert
+     * @return false if already existing (or another error...), else true
      */
     boolean insertUser(RestHighLevelClient client, User user) throws IOException;
     
