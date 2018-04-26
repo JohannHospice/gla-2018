@@ -94,7 +94,7 @@ public class UserResource extends Ressource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/friends")
-    public ArrayList<String> getFriends(@Context HttpServletRequest httpRequest, @FormParam("friendname") String friendName) throws IOException {
+    public ArrayList<String> getFriends(@Context HttpServletRequest httpRequest, @FormParam("friendname") String friendName) throws Exception {
         User user = getUserBySession(httpRequest);
         return user.friends;
     }
@@ -102,7 +102,7 @@ public class UserResource extends Ressource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/friends/add")
-    public boolean addFriend(@Context HttpServletRequest httpRequest, @FormParam("friendname") String friendName) throws IOException {
+    public boolean addFriend(@Context HttpServletRequest httpRequest, @FormParam("friendname") String friendName) throws Exception {
         User user = getUserBySession(httpRequest);
         User friend = DAO.getActionUser().getOneUser(DAO.client, friendName);
         if (friend != null) {
@@ -115,7 +115,7 @@ public class UserResource extends Ressource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/friends/remove")
-    public boolean removeFriend(@Context HttpServletRequest httpRequest, @FormParam("friendname") final String friendName) throws IOException {
+    public boolean removeFriend(@Context HttpServletRequest httpRequest, @FormParam("friendname") final String friendName) throws Exception {
         User user = getUserBySession(httpRequest);
         if (user.friends.contains(friendName)) {
             user.friends.remove(friendName);
