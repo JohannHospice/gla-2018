@@ -12,7 +12,7 @@ public interface MapInterface {
 	 * Create index map
 	 * 
 	 */
-	void createIndexMap() throws IOException;
+	void createIndexMap(RestHighLevelClient client) throws IOException;
     /**
      * 
      * @return the list of all maps

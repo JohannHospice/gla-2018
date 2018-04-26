@@ -11,6 +11,7 @@ import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
@@ -232,9 +233,9 @@ public class UserDAO implements UserInterface{
 		return users;
 	}
 
-	public void createIndexUser() throws IOException {
+	public void createIndexUser(RestHighLevelClient client) throws IOException {
 		CreateIndexRequest request = new CreateIndexRequest("users");
-		
+		CreateIndexResponse createIndexResponse = client.indices().create(request);
 	}
 
 }

@@ -11,7 +11,7 @@ public interface UserInterface {
 	 * Create index users
 	 * 
 	 */
-	void createIndexUser() throws IOException;
+	void createIndexUser(RestHighLevelClient client) throws IOException;
 	
     /**
      * 

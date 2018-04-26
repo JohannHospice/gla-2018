@@ -9,6 +9,7 @@ import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
@@ -135,9 +136,9 @@ public class LocationDAO implements LocationInterface{
 		return true;
 	}
 
-	public void createIndexLocation() throws IOException {
+	public void createIndexLocation(RestHighLevelClient client) throws IOException {
 		CreateIndexRequest request = new CreateIndexRequest("locations");
-		
+		CreateIndexResponse createIndexResponse = client.indices().create(request);
 	}
 
 
