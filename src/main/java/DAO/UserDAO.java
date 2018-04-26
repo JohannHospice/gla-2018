@@ -206,6 +206,8 @@ public class UserDAO implements UserInterface{
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
 		MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("username", username);
 		matchQueryBuilder.fuzziness(Fuzziness.AUTO); //Pour chercher un username proche
+		matchQueryBuilder.maxExpansions(5);
+		
 		searchSourceBuilder.query(matchQueryBuilder); 
 		searchSourceBuilder.from(from); 
 		searchSourceBuilder.size(size);
