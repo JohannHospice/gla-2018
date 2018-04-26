@@ -91,6 +91,6 @@ public interface MapInterface {
      * @return return a list of maps corresponding to the name (not exact match) within the selected interval
      * @throws IOException 
      */
-    ArrayList<Map> searchMap(RestHighLevelClient client, String name, int from, int size) throws IOException;
+    ArrayList<Map> searchMap(RestHighLevelClient client, String name, int from, int size, boolean only_public, boolean only_private) throws IOException;
     
 }
