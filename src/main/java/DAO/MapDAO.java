@@ -182,39 +182,15 @@ public class MapDAO implements MapInterface{
 	}
 
 	
-	public ArrayList<Map> getPublicMapsByUsername(RestHighLevelClient client, String username) throws IOException{
+	public ArrayList<Map> getPublicMapsByUsername(RestHighLevelClient client, String username, int from, int size, boolean only_public, boolean only_private) throws IOException{
 		ArrayList<Map> maps = new ArrayList<Map>();
 		
 		SearchRequest searchRequest = new SearchRequest("maps"); 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
-		searchSourceBuilder.query(QueryBuilders.termQuery("isPublic", "true"));
-		searchRequest.source(searchSourceBuilder);
-		
-		SearchResponse searchResponse = client.search(searchRequest);
-		SearchHits hits = searchResponse.getHits();
-		long totalHits = hits.getTotalHits();
-		float maxScore = hits.getMaxScore();
-		
-		SearchHit[] searchHits = hits.getHits();
-		for (SearchHit hit : searchHits) {
-		    // do something with the SearchHit
-			//String index = hit.getId();
-			
-			String sourceAsString = hit.getSourceAsString();
-			Map map = new ObjectMapper().readValue(sourceAsString, Map.class);
-			if(compareNamesMapUser(map.name, username))
-				maps.add(map);
-		}
-		
-		return maps;
-	}
-	
-	public ArrayList<Map> getPublicMapsByUsername(RestHighLevelClient client, String username, int from, int size) throws IOException{
-		ArrayList<Map> maps = new ArrayList<Map>();
-		
-		SearchRequest searchRequest = new SearchRequest("maps"); 
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
-		searchSourceBuilder.query(QueryBuilders.termQuery("isPublic", "true"));
+		if(only_public && !only_private)
+			searchSourceBuilder.query(QueryBuilders.termQuery("isPublic", "true"));
+		if(only_private && !only_public)
+			searchSourceBuilder.query(QueryBuilders.termQuery("isPublic", "false"));
 		searchSourceBuilder.from(from); 
 		searchSourceBuilder.size(size);
 		searchRequest.source(searchSourceBuilder);
@@ -237,7 +213,22 @@ public class MapDAO implements MapInterface{
 		
 		return maps;
 	}
-	
+	public String concatMapName(String map_name, String username)
+	{
+		return map_name+"_"+username;
+	}
+	public String parseMapName(String map_name)
+	{
+		String real_name ="";
+		for(int i =0;i<map_name.length();i++)
+		{
+			if(map_name.charAt(i) == '_')
+				return real_name;
+			else
+				real_name += map_name.charAt(i);
+		}
+		return real_name;
+	}
 	private boolean compareNamesMapUser(String map_name, String user_name)
 	{
 		boolean und = false;
@@ -256,12 +247,12 @@ public class MapDAO implements MapInterface{
 		return true;
 	}
 
-	public ArrayList<ArrayList<Map>> getFriendsMapByUsername(RestHighLevelClient client, String username) throws IOException{
+	public ArrayList<ArrayList<Map>> getFriendsMapByUsername(RestHighLevelClient client, String username, int from, int size) throws IOException{
 		ArrayList<String> friends = DAO.getActionUser().getOneUser(client, username).friends;
 		ArrayList<ArrayList<Map>> maps = new ArrayList<ArrayList<Map>>();
 		for(String friend : friends)
 		{
-			maps.add(getPublicMapsByUsername(client, friend));
+			maps.add(getPublicMapsByUsername(client, friend,from, size, true, false));
 		}
 		return maps;
 	}
@@ -338,6 +329,7 @@ public class MapDAO implements MapInterface{
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
 		MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("name", name);
 		matchQueryBuilder.fuzziness(Fuzziness.AUTO); //Pour chercher un username proche 
+		matchQueryBuilder.maxExpansions(5);
 		searchSourceBuilder.query(matchQueryBuilder); 
 		searchSourceBuilder.from(from); 
 		searchSourceBuilder.size(size);
