@@ -8,7 +8,6 @@ public class Location {
     public String mapName;
     public ArrayList<String> urlImg;
     public ArrayList<String> content;
-    public LocalDateTime created;
     public float longitude;
     public float latitude;
     public boolean isFavorite = false;
@@ -82,7 +81,6 @@ public class Location {
      */
     public Location(String map,String nameplace) {
         this.nameplace = map+"_"+nameplace;
-        this.created = LocalDateTime.now();
     }
 
     public Location(String map,String nameplace, float latitude, float longitude) {
@@ -98,7 +96,6 @@ public class Location {
     public Location(String map,String nameplace, ArrayList<String> url) {
         this.nameplace = map+"_"+nameplace;
         this.urlImg = url;
-        this.created = LocalDateTime.now();
     }
 
     /**
@@ -110,7 +107,6 @@ public class Location {
         this.nameplace = map+"_"+nameplace;
         this.urlImg = url;
         this.content = content;
-        this.created = LocalDateTime.now();
     }
 
 
