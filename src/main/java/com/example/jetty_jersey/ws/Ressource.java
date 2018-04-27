@@ -14,7 +14,7 @@ public class Ressource {
     }
 
     public User getUserBySession(HttpServletRequest httpRequest) throws AuthException {
-        String username = (String) httpRequest.getSession().getAttribute("username");
+        String username = (String) httpRequest.getSession().getAttribute("user");
         if (username == null)
             throw new AuthException("user not in session");
 

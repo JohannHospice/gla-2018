@@ -12,7 +12,7 @@ public interface MapInterface {
 	 * Create index map
 	 * 
 	 */
-	void createIndexMap() throws IOException;
+	void createIndexMap(RestHighLevelClient client) throws IOException;
     /**
      * 
      * @return the list of all maps
@@ -66,7 +66,7 @@ public interface MapInterface {
     /**
      * create a new Map
      * @param mapname
-     * @return true if the request succeded, else false
+     * @return true if the map was inserted, else false (already existing).
      */
     boolean insertMap(RestHighLevelClient client, Map map) throws IOException;
     
@@ -91,6 +91,6 @@ public interface MapInterface {
      * @return return a list of maps corresponding to the name (not exact match) within the selected interval
      * @throws IOException 
      */
-    ArrayList<Map> searchMap(RestHighLevelClient client, String name, int from, int size) throws IOException;
+    ArrayList<Map> searchMap(RestHighLevelClient client, String name, int from, int size, boolean only_public, boolean only_private) throws IOException;
     
 }

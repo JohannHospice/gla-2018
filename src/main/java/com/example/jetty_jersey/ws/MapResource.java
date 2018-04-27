@@ -47,7 +47,7 @@ public class MapResource extends Ressource {
      */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{mapname}")
+    @Path("/by-name/{mapname}")
     public Map getUsersMap(@PathParam("mapname") String mapname) throws IOException {
 
         return DAO.getActionMap().getOneMap(DAO.client, mapname);
@@ -56,12 +56,14 @@ public class MapResource extends Ressource {
     /**
      * @param mapname
      * @return
-     * @throws IOException
+     * @throws Exception
      */
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{mapname}")
-    public Response deleteMap(@PathParam("mapname") String mapname) throws IOException {
+    @Path("/by-name/{mapname}")
+    public Response deleteMap(@Context HttpServletRequest httpRequest,@PathParam("mapname") String mapname) throws Exception {
+        User user = getUserBySession(httpRequest);
+        
         boolean success = DAO.getActionMap().deleteMap(DAO.client, mapname);
         return (success) ? Response.status(Response.Status.ACCEPTED).build() : Response.status(Response.Status.NOT_MODIFIED).build();
     }
@@ -73,15 +75,15 @@ public class MapResource extends Ressource {
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{mapname}")
+    @Path("/by-name/{mapname}")
     public Map setUsersMap(@PathParam("mapname") String mapname) throws IOException {
         Map map = DAO.getActionMap().getOneMap(DAO.client, mapname);
+        
         boolean success = DAO.getActionMap().updateMap(DAO.client, map);
         return (success) ? DAO.getActionMap().getOneMap(DAO.client, mapname) : map;
     }
 
     /**
-     * A MODIFIER NIVEAU DAO: Il faut une méthode cherchant toutes les map contenant le tokken ds le nom
      *
      * @param tokken
      * @return
@@ -92,7 +94,7 @@ public class MapResource extends Ressource {
     @Path("/public")
     public ArrayList<Map> searchMap(@QueryParam("tokken") String tokken) throws IOException {
 
-        return DAO.getActionMap().searchMap(DAO.client, tokken, 0, 10);
+        return DAO.getActionMap().searchMap(DAO.client, tokken, 0, 10,true,false);
     }
 
     /**
@@ -106,8 +108,8 @@ public class MapResource extends Ressource {
     public Map createMap(@Context HttpServletRequest httpRequest, @FormParam("mapname") String mapname) throws IOException {
         try {
             User user = getUserBySession(httpRequest);
-            user.addMap(mapname);
-            Map map = new Map(mapname);
+            Map map = new Map(user.getUsername(),mapname);
+            user.addMap(map.getName());
 
             DAO.getActionMap().insertMap(DAO.client, map);
             DAO.getActionUser().updateUser(DAO.client, user);

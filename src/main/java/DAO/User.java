@@ -8,10 +8,13 @@ public class User{
 	public String username;
 	public ArrayList<String> friends; //Liste d'username
 	public ArrayList<String> maps; // Liste de nom des maps (parce que y'a pas d'increment id)
-    
+	public ArrayList<String> notifications;
+	
 	public User()
 	{
-		
+        friends = new ArrayList<String>();
+        maps = new ArrayList<String>();
+        notifications = new ArrayList<String>();
 	}
     /**
      * 
@@ -19,8 +22,10 @@ public class User{
      * @param password
      */
     public User(String mail,String password){
+        super();
         this.mail = mail;
         this.password = password;
+        
     }
     
     /**
@@ -30,6 +35,7 @@ public class User{
      * @param password
      */
     public User(String username, String mail,String password){
+        super();
         this.username = username;
     	this.mail = mail;
         this.password = password;
@@ -87,6 +93,14 @@ public class User{
         this.friends.add(user);
     }
     
+    void setFriend(ArrayList<String> friends) {
+    	this.friends = friends;
+    }
+    
+    public ArrayList<String> getFriends(){
+        return this.friends;
+    }
+    
     public ArrayList<String> getMaps(){
         return this.maps;
     }
@@ -98,9 +112,22 @@ public class User{
     /**
      * @param user 
      */
-    void deleteFriend(User user){
+    void deleteFriend(String user){
         this.friends.remove(user);
     }
+    
+    void addNotifications(String notification){
+        this.notifications.add(notification);
+    }
+    
+    void setNotifications(ArrayList<String> notifications) {
+    	this.notifications = notifications;
+    }
+    
+    public ArrayList<String> getNotifications(){
+        return this.notifications;
+    }
+    
     
     @Override
     public String toString(){
@@ -113,18 +140,15 @@ public class User{
      * @param map 
      */
     public void addMap(String map){
-        if(maps.contains(map))
-            return;
-        this.maps.add(map);
+        if(!maps.contains(map))
+            this.maps.add(map);
     }
     
     /**
      * 
      * @param map 
      */
-    public void deleteMap(Map map){
+    public void deleteMap(String map){
         this.maps.remove(map);
     }
-    
-
 }

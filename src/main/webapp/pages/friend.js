@@ -2,14 +2,14 @@ const $ = require('jquery');
 
 const { onLogin, showLogin, showRegister, hideOverlay } = require('../overlay.js');
 
-const showMaps = (user) => {
+const showUserFriends = (user) => {
   $.ajax({
-    url: '/ws/map/public',
+    url: '/ws/user/friends',
   }).always(console.log);
 };
 
 const main = () => {
-  onLogin(showMaps, showRegister);
+  onLogin(showUserFriends, showLogin);
 }
 
 module.exports = {
