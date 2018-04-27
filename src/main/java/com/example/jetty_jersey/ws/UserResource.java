@@ -47,9 +47,14 @@ public class UserResource extends Ressource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/maps")
     public ArrayList<Map> getMapsOfUser(@Context HttpServletRequest httpRequest) throws Exception {
+		System.out.println("/maps");
     	User user = getUserBySession(httpRequest);
+		System.out.println(user.toString());
 
-        return DAO.getActionUser().getMapsOfUser(DAO.client, user.getUsername());
+        ArrayList<Map> list = DAO.getActionUser().getMapsOfUser(DAO.client, user.getUsername());
+		if (list.size() == 0)
+			return null;
+		return list;
     }
 
     /**
