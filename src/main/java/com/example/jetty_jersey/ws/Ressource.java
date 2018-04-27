@@ -14,14 +14,14 @@ public class Ressource {
     }
 
     public User getUserBySession(HttpServletRequest httpRequest) throws AuthException {
-        String username = (String) httpRequest.getSession().getAttribute("user");
-        if (username == null)
+        User user = (User) httpRequest.getSession().getAttribute("user");
+        if (user == null)
             throw new AuthException("user not in session");
 
         try {
-            return DAO.getActionUser().getOneUser(DAO.client, username);
+            return DAO.getActionUser().getOneUser(DAO.client, user.getUsername());
         } catch (IOException e) {
-            throw new AuthException("user doesnot exist");
+            throw new AuthException("user no longer exists");
         }
     }
 }

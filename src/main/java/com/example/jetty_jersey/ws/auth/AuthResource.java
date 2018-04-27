@@ -32,17 +32,18 @@ public class AuthResource extends Ressource{
                                 @FormParam("password") String password) {
 
         System.out.println("in /login");
-        try {
-            User user = DAO.getActionUser().getOneUser(DAO.client, username);
+        User user = null;
+		try {
+            user = DAO.getActionUser().getOneUser(DAO.client, username);
+		} catch (IOException ignore) {}
+		if (user != null) {
             if (user.getPassword().equals(password)) {
                 httpRequest.getSession().getId(); // initialize session
                 httpRequest.getSession().setAttribute("user", user);
                 return new SimpleResponse(true);
             }
             System.out.println("Mauvais mot de passe");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		}
         return new SimpleResponse(false);
     }
 
