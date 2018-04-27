@@ -10,6 +10,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 @Path("/location")
@@ -18,19 +19,20 @@ public class LocationRessource extends Ressource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/get")
     public Location getLocation(@QueryParam("locationname") String locationName) {
-        /*
+    	//Map mapname = 
+        
         // todo securite
         try {
             return DAO.getActionLocation().getOneLocation(DAO.client, locationName);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        */
+        
         return null;
     }
 
     @PUT
-    @Produces(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/add")
     public boolean addLocation(@Context HttpServletRequest httpRequest,
                                @FormParam("map") String map,
@@ -54,7 +56,7 @@ public class LocationRessource extends Ressource {
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/remove")
     public boolean removeLocation(@Context HttpServletRequest httpRequest,
                                   @FormParam("mapname") String mapname,
@@ -64,7 +66,7 @@ public class LocationRessource extends Ressource {
             if (user.getMaps().contains(mapname)) {
                 Map map = DAO.getActionMap().getOneMap(DAO.client, mapname);
                 map.removeLocation(locationName);
-                DAO.getActionMap().updateMap(DAO.client, map);
+                DAO.getActionLocation().deleteLocation(DAO.client, locationName);
                 return true;
             }
         } catch (Exception e) {
@@ -74,7 +76,7 @@ public class LocationRessource extends Ressource {
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/update")
     public boolean updateLocation(@Context HttpServletRequest httpRequest,
                                   @FormParam("mapname") String mapname,
@@ -87,16 +89,16 @@ public class LocationRessource extends Ressource {
             if (user.getMaps().contains(mapname)) {
                 Map map = DAO.getActionMap().getOneMap(DAO.client, mapname);
                 if (map.getLocations().contains(locationName)) {
-                /*
-                //todo implementer la methode getOneLocation
+                
                 Location location = DAO.getActionLocation().getOneLocation(DAO.client, locationName);
                 location.setLatitude(latitude);
                 location.setLongitude(longitude);
                 // attention nom de la localisation non modifiable selon la BD localisationName = id
                 // pareil pour les map
                 location.content.add(description);
+                DAO.getActionLocation().updateLocation(DAO.client, location);
                 return true;
-                */
+                
                 }
             }
         } catch (Exception e) {
