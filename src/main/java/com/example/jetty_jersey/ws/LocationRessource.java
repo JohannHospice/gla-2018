@@ -39,23 +39,30 @@ public class LocationRessource extends Ressource {
                                @FormParam("nameplace") String nameplace,
                                @FormParam("latitude") float latitude,
                                @FormParam("longitude") float longitude,
-                               @FormParam("content") ArrayList<String> content,
-                               @FormParam("url") ArrayList<String> url) {
+                               @FormParam("content") String content,
+                               @FormParam("url") String url) {
         try {
             User user = getUserBySession(httpRequest);
+            ArrayList<String> urls = new ArrayList<String>();
+            urls.add(url);
+            ArrayList<String> contents = new ArrayList<String>();
+            contents.add(content);
             if (user.getMaps().contains(map)) {
-                return DAO.getActionLocation().insertLocationAndUpdateMap(
+                boolean success = DAO.getActionLocation().insertLocationAndUpdateMap(
                         DAO.client,
-                        new Location(map,nameplace, latitude, longitude,url,content),
+                        new Location(map,nameplace, latitude, longitude,urls,contents),
                         map);
+                return success;
             }
+            else
+            	return false;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    @POST
+    @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/remove")
     public boolean removeLocation(@Context HttpServletRequest httpRequest,
