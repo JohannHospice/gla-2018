@@ -70,7 +70,7 @@ const showRegister = () => {
     return false;
   });
   let form = $('div.overlay form.register-form');
-  form.on('submit', postForm(form, 'PUT', 'auth/signup'), showLogin);
+  form.on('submit', postForm(form, 'PUT', 'auth/signup', showLogin));
 };
 
 const hideOverlay = () => {
