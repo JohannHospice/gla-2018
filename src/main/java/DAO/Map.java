@@ -9,7 +9,6 @@ public class Map {
     public String name="NoDefined"; //C'est l'id : username_nomdemap
     public String nameToSearch="";
     public ArrayList<String> locations;
-    public LocalDateTime created;
     public ArrayList<String> privateUsers; //un username
     
     public boolean isPublic=true;
@@ -21,7 +20,6 @@ public class Map {
      */
     public Map(String username,String name){
         this.name = username+"_"+name;
-        this.created = LocalDateTime.now();
         locations = new ArrayList<String>();
         privateUsers = new ArrayList<String>();
     }
@@ -30,7 +28,6 @@ public class Map {
      * 
      */
     public Map(){
-        this.created = LocalDateTime.now();
         locations = new ArrayList<String>();
         privateUsers = new ArrayList<String>();
     }
@@ -114,14 +111,7 @@ public class Map {
     {
     	return this.locations;
     }
-    public void setCreated(LocalDateTime created)
-    {
-    	this.created = created;
-    }
-    public LocalDateTime getCreated()
-    {
-    	return this.created;
-    }
+
     public void setPrivateUsers(ArrayList<String> privateUsers)
     {
     	this.privateUsers = privateUsers;

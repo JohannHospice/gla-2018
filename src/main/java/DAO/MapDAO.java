@@ -265,7 +265,6 @@ public class MapDAO implements MapInterface{
 		jsonMap.put("name", map.name);
 		jsonMap.put("nameToSearch", map.nameToSearch);
 		jsonMap.put("locations", map.locations);
-		jsonMap.put("created", map.created);
 		jsonMap.put("privateUsers", map.privateUsers);
 		jsonMap.put("isPublic", map.isPublic);
 		jsonMap.put("isFavorite", map.isFavorite);
