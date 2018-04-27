@@ -10,6 +10,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import java.util.ArrayList;
+
 @Path("/location")
 public class LocationRessource extends Ressource {
     @GET
@@ -31,17 +33,19 @@ public class LocationRessource extends Ressource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Path("/add")
     public boolean addLocation(@Context HttpServletRequest httpRequest,
-                               @FormParam("mapname") String mapname,
-                               @FormParam("locationname") String locationName,
+                               @FormParam("map") String map,
+                               @FormParam("nameplace") String nameplace,
                                @FormParam("latitude") float latitude,
-                               @FormParam("longitude") float longitude) {
+                               @FormParam("longitude") float longitude,
+                               @FormParam("content") ArrayList<String> content,
+                               @FormParam("url") ArrayList<String> url) {
         try {
             User user = getUserBySession(httpRequest);
-            if (user.getMaps().contains(mapname)) {
+            if (user.getMaps().contains(map)) {
                 return DAO.getActionLocation().insertLocationAndUpdateMap(
                         DAO.client,
-                        new Location(mapname, locationName, latitude, longitude),
-                        mapname);
+                        new Location(map,nameplace, latitude, longitude,url,content),
+                        map);
             }
         } catch (Exception e) {
             e.printStackTrace();
