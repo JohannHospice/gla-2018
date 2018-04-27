@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -137,8 +139,9 @@ public class MapDAO implements MapInterface{
 		SearchHits hits = searchResponse.getHits();
 		long totalHits = hits.getTotalHits();
 		float maxScore = hits.getMaxScore();
+		System.out.println("total : "+totalHits+", maxScore : "+maxScore);
 		
-		SearchHit[] searchHits = hits.getHits();
+		SearchHit[] searchHits = hits.getHits();																																																															
 		for (SearchHit hit : searchHits) {
 		    // do something with the SearchHit
 			//String index = hit.getId();
@@ -161,11 +164,13 @@ public class MapDAO implements MapInterface{
 		searchSourceBuilder.from(from); 
 		searchSourceBuilder.size(size);
 		searchRequest.source(searchSourceBuilder);
-		
+																				
 		SearchResponse searchResponse = client.search(searchRequest);
-		SearchHits hits = searchResponse.getHits();
+		SearchHits hits = searchResponse.getHits();																																																																																									
 		long totalHits = hits.getTotalHits();
 		float maxScore = hits.getMaxScore();
+		
+		System.out.println("total : "+totalHits+", maxScore : "+maxScore);
 		
 		SearchHit[] searchHits = hits.getHits();
 		for (SearchHit hit : searchHits) {
@@ -199,6 +204,7 @@ public class MapDAO implements MapInterface{
 		SearchHits hits = searchResponse.getHits();
 		long totalHits = hits.getTotalHits();
 		float maxScore = hits.getMaxScore();
+		System.out.println("total : "+totalHits+", maxScore : "+maxScore);
 		
 		SearchHit[] searchHits = hits.getHits();
 		for (SearchHit hit : searchHits) {
@@ -215,16 +221,17 @@ public class MapDAO implements MapInterface{
 	}
 	public String concatMapName(String map_name, String username)
 	{
-		return map_name+"_"+username;
+		return username+"_"+map_name;
 	}
-	public String parseMapName(String map_name)
+	public String parseMapName(String map_name)//Retourne le vrai nom de la map
 	{
 		String real_name ="";
+		boolean ins = false;
 		for(int i =0;i<map_name.length();i++)
 		{
 			if(map_name.charAt(i) == '_')
-				return real_name;
-			else
+				ins = true;
+			else if(ins)
 				real_name += map_name.charAt(i);
 		}
 		return real_name;
@@ -233,16 +240,11 @@ public class MapDAO implements MapInterface{
 	{
 		boolean und = false;
 		int c = 0;
-		for(int i =0;i<map_name.length();i++)
+		for(int i =0;i<user_name.length();i++)
 		{
-			if(und)
-			{
-				if(user_name.charAt(c) != map_name.charAt(i))
-					return false;
-			}
-			
-			if(map_name.charAt(i) == '_')
-				und = true;
+			if(user_name.charAt(c) != map_name.charAt(i))
+				return false;
+
 		}
 		return true;
 	}
@@ -261,21 +263,24 @@ public class MapDAO implements MapInterface{
 		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
 		
 		jsonMap.put("name", map.name);
+		jsonMap.put("nameToSearch", map.nameToSearch);
 		jsonMap.put("locations", map.locations);
-		jsonMap.put("created", map.created);
 		jsonMap.put("privateUsers", map.privateUsers);
 		jsonMap.put("isPublic", map.isPublic);
 		jsonMap.put("isFavorite", map.isFavorite);
 		
 		
 		IndexRequest indexRequest = new IndexRequest("maps", "doc",map.name)
-		        .source(jsonMap);
+		        .source(jsonMap)
+		        .opType(DocWriteRequest.OpType.CREATE);
 		
 		try {
 			IndexResponse indexResponse = client.index(indexRequest);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
+		} catch(ElasticsearchException e) {
+		    if (e.status() == RestStatus.CONFLICT) {
+		        System.out.println("insert ne fonctionne pas (la map existe déjà ?)");
+		        return false;
+		    }
 		}
 		return true;
 	}
@@ -322,12 +327,16 @@ public class MapDAO implements MapInterface{
 		return true;
 	}
 
-	public ArrayList<Map> searchMap(RestHighLevelClient client, String name, int from, int size) throws IOException {
+	public ArrayList<Map> searchMap(RestHighLevelClient client, String nameToSearch, int from, int size, boolean only_public, boolean only_private) throws IOException {
 		ArrayList<Map> maps = new ArrayList<Map>();
 		
 		SearchRequest searchRequest = new SearchRequest("maps"); 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
-		MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("name", name);
+		if(only_public && !only_private)
+			searchSourceBuilder.query(QueryBuilders.termQuery("isPublic", "true"));
+		if(only_private && !only_public)
+			searchSourceBuilder.query(QueryBuilders.termQuery("isPublic", "false"));
+		MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("nameToSearch", nameToSearch);
 		matchQueryBuilder.fuzziness(Fuzziness.AUTO); //Pour chercher un username proche 
 		matchQueryBuilder.maxExpansions(5);
 		searchSourceBuilder.query(matchQueryBuilder); 
@@ -355,8 +364,17 @@ public class MapDAO implements MapInterface{
 		return maps;
 	}
 
-	public void createIndexMap() throws IOException {
-		CreateIndexRequest request = new CreateIndexRequest("maps");
+	public void createIndexMap(RestHighLevelClient client) throws IOException {
+		
+		try
+		{
+			CreateIndexRequest request = new CreateIndexRequest("maps");
+			CreateIndexResponse createIndexResponse = client.indices().create(request);
+		}catch(Exception e)
+		{
+			System.out.println("l'index users existe déjà");
+		}
+		
 		
 	}
 

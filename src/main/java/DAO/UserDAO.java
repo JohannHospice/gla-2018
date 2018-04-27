@@ -8,8 +8,10 @@ import java.util.HashMap;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
@@ -66,7 +68,7 @@ public class UserDAO implements UserInterface{
 	public ArrayList<User> getUsers(RestHighLevelClient client, int from, int size) throws IOException {
 		ArrayList<User> users = new ArrayList<User>();
 		
-		SearchRequest searchRequest = new SearchRequest("users"); 
+		SearchRequest searchRequest = new SearchRequest("users");
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
 		searchSourceBuilder.query(QueryBuilders.matchAllQuery()); 
 		searchSourceBuilder.from(from); 
@@ -152,23 +154,21 @@ public class UserDAO implements UserInterface{
 		jsonMap.put("mail", user.mail);
 		jsonMap.put("friends", user.friends);
 		jsonMap.put("maps", user.maps);
-		System.out.println("insertUser");
 		IndexRequest indexRequest = new IndexRequest("users", "doc",user.username)
-		        .source(jsonMap);
+		        .source(jsonMap)
+		        .opType(DocWriteRequest.OpType.CREATE);
 		
 		try {
 			indexRequest.create(true);
 			IndexResponse indexResponse = client.index(indexRequest);
-			System.out.println("insertUser 222");
 			if (indexResponse.getResult() == DocWriteResponse.Result.CREATED) {
 				System.out.println("user "+user.username+" créé");
 			}
-			else if (indexResponse.getResult() == DocWriteResponse.Result.UPDATED) {
-				System.out.println("user "+user.username+" update dans insertUser (pas normal)");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
+		} catch(ElasticsearchException e) {
+		    if (e.status() == RestStatus.CONFLICT) {
+		        System.out.println("insert ne fonctionne pas (l'user existe déjà ?)");
+		        return false;
+		    }
 		}
 		return true;
 	}
@@ -233,8 +233,14 @@ public class UserDAO implements UserInterface{
 		return users;
 	}
 
-	public void createIndexUser() throws IOException {
-		CreateIndexRequest request = new CreateIndexRequest("users");
+	public void createIndexUser(RestHighLevelClient client) throws IOException {
+		try {
+			CreateIndexRequest request = new CreateIndexRequest("users");
+			CreateIndexResponse createIndexResponse = client.indices().create(request);
+		}catch(Exception e)
+		{
+			System.out.println("l'index users existe déjà");
+		}
 		
 	}
 

@@ -37,17 +37,19 @@ public class UserResource extends Ressource {
 
         return DAO.getActionUser().searchUser(DAO.client, tokken, 0, 10);
     }
-
+    
     /**
-     * @param username
+     * @param httpRequest
      * @return
-     * @throws IOException
+     * @throws Exception
      */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{username}")
-    public ArrayList<Map> getMaps(@PathParam("username") String username) throws IOException {
-        return DAO.getActionMap().getPublicMapsByUsername(DAO.client, username);
+    @Path("/maps")
+    public ArrayList<Map> getMapsOfUser(@Context HttpServletRequest httpRequest) throws Exception {
+    	User user = getUserBySession(httpRequest);
+
+        return DAO.getActionUser().getMapsOfUser(DAO.client, user.getUsername());
     }
 
     /**
@@ -57,7 +59,21 @@ public class UserResource extends Ressource {
      */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{username}/friends")
+    @Path("/by-name/{username}")
+    public ArrayList<Map> getUserMaps(@PathParam("username") String username) throws IOException {
+        return DAO.getActionMap().getPublicMapsByUsername(DAO.client, username,0,10,true,false);
+    }
+    
+    
+
+    /**
+     * @param username
+     * @return
+     * @throws IOException
+     */
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/by-name/{username}/friends")
     public ArrayList<User> getFriends(@PathParam("username") String username) throws IOException {
 
         return DAO.getActionUser().getFriends(DAO.client, username);
@@ -70,7 +86,7 @@ public class UserResource extends Ressource {
      */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{username}/info")
+    @Path("/by-name/{username}/info")
     public User getUserBySession(@PathParam("username") String username) throws IOException {
 
         return DAO.getActionUser().getOneUser(DAO.client, username);
@@ -79,27 +95,32 @@ public class UserResource extends Ressource {
     /**
      * @param username
      * @return
-     * @throws IOException
+     * @throws Exception
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{username}/info")
-    public User modifyUser(@PathParam("username") String username) throws IOException {
-        User user = DAO.getActionUser().getOneUser(DAO.client, username);
-        boolean success = DAO.getActionUser().updateUser(DAO.client, user);
-        return (success) ? DAO.getActionUser().getOneUser(DAO.client, username) : user;
+    @Path("/info")
+    public boolean modifyUserData(@Context HttpServletRequest httpRequest,
+    							@FormParam("email") String email,
+    							@FormParam("password") String password,
+    							@FormParam("passwordConfirm") String passwordConfirm) throws IOException, AuthException {
+        User user = getUserBySession(httpRequest);
+        if(!password.equals(passwordConfirm))
+        	return false;
+        user.setMail(email);
+        user.setPassword(password);
+        return DAO.getActionUser().updateUser(DAO.client, user);
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/friends")
-    public ArrayList<String> getFriends(@Context HttpServletRequest httpRequest, @FormParam("friendname") String friendName) throws Exception {
+    public ArrayList<String> getFriends(@Context HttpServletRequest httpRequest) throws Exception {
         User user = getUserBySession(httpRequest);
-        return user.friends;
+        return user.getFriends();
     }
 
-    @POST
+    @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/friends/add")
     public boolean addFriend(@Context HttpServletRequest httpRequest, @FormParam("friendname") String friendName) throws Exception {
@@ -107,12 +128,13 @@ public class UserResource extends Ressource {
         User friend = DAO.getActionUser().getOneUser(DAO.client, friendName);
         if (friend != null) {
             user.friends.add(user.getUsername());
+            DAO.getActionUser().updateUser(DAO.client, user);
             return true;
         }
         return false;
     }
 
-    @POST
+    @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/friends/remove")
     public boolean removeFriend(@Context HttpServletRequest httpRequest, @FormParam("friendname") final String friendName) throws Exception {

@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
@@ -15,6 +18,7 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -64,13 +68,16 @@ public class LocationDAO implements LocationInterface{
 		jsonMap.put("isFavorite", location.isFavorite);
 		
 		IndexRequest indexRequest = new IndexRequest("locations", "doc",map.name)
-		        .source(jsonMap);
+		        .source(jsonMap)
+		        .opType(DocWriteRequest.OpType.CREATE);
 		
 		try {
 			IndexResponse indexResponse = client.index(indexRequest);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
+		} catch(ElasticsearchException e) {
+		    if (e.status() == RestStatus.CONFLICT) {
+		        System.out.println("insert ne fonctionne pas (la location existe déjà ?)");
+		        return false;
+		    }
 		}
 		return true;
 	}
@@ -90,14 +97,17 @@ public class LocationDAO implements LocationInterface{
 		map.addLocation(location.nameplace);
 		
 		IndexRequest indexRequest = new IndexRequest("locations", "doc",location.nameplace)
-		        .source(jsonMap);
+		        .source(jsonMap)
+		        .opType(DocWriteRequest.OpType.CREATE);
 		
 		try {
 			IndexResponse indexResponse = client.index(indexRequest);
 			DAO.getActionMap().updateMap(client, map);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
+		}catch(ElasticsearchException e) {
+		    if (e.status() == RestStatus.CONFLICT) {
+		        System.out.println("insert ne fonctionne pas (la location existe déjà ?)");
+		        return false;
+		    }
 		}
 		return true;
 	}
@@ -107,7 +117,7 @@ public class LocationDAO implements LocationInterface{
 		jsonMap.put("urlImg", location.urlImg);
 		jsonMap.put("content", location.content);
 		jsonMap.put("isFavorite", location.isFavorite);
-		UpdateRequest request = new UpdateRequest("maps", 
+		UpdateRequest request = new UpdateRequest("locations", 
 		        "doc",  
 		        location.nameplace)
 		        .doc(jsonMap);
@@ -126,9 +136,16 @@ public class LocationDAO implements LocationInterface{
 		return true;
 	}
 
-	public void createIndexLocation() throws IOException {
-		CreateIndexRequest request = new CreateIndexRequest("locations");
-		
+	public void createIndexLocation(RestHighLevelClient client) throws IOException {
+		try
+		{
+			CreateIndexRequest request = new CreateIndexRequest("locations");
+			CreateIndexResponse createIndexResponse = client.indices().create(request);
+		}
+		catch(Exception e)
+		{
+			System.out.println("l'index users existe déjà");
+		}
 	}
 
 
