@@ -12,6 +12,8 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.get.GetRequest;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
@@ -30,7 +32,33 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 public class LocationDAO implements LocationInterface{
+	
+	public Location getOneLocation(RestHighLevelClient client, String id_location) throws IOException {
+		GetRequest getRequest = new GetRequest(
+		        "locations", 
+		        "doc",  
+		        id_location); 
+		String sourceAsString = "";
+		try {
+			
+			GetResponse getResponse = client.get(getRequest);
 
+			if (getResponse.isExists()) {
+			    sourceAsString = getResponse.getSourceAsString();        
+			    //System.out.println(sourceAsString+"\n");
+			} else {
+			    System.out.println("Impossible de trouver la location "+id_location);
+			    return null;
+			}
+		} catch (ElasticsearchException e) {
+		    if (e.status() == RestStatus.NOT_FOUND) {
+		        
+		    }
+		}
+
+		return new ObjectMapper().readValue(sourceAsString, Location.class);
+	}
+	
 	public ArrayList<Location> getLocations(RestHighLevelClient client,  String map_name) throws IOException {
 		ArrayList<Location> locations = new ArrayList<Location>();
 		
@@ -140,11 +168,16 @@ public class LocationDAO implements LocationInterface{
 	}
 	
 	public boolean deleteLocation(RestHighLevelClient client, String id_location) throws IOException {
+		Location location = this.getOneLocation(client, id_location);
 		DeleteRequest request = new DeleteRequest(
 		        "locations",    
 		        "doc",     
 		        id_location);
 		DeleteResponse deleteResponse = client.delete(request);
+		Map map = DAO.getActionMap().getOneMap(client, location.mapName);
+		map.removeLocation(id_location);
+		DAO.getActionMap().updateMap(client, map);
+		
 		ReplicationResponse.ShardInfo shardInfo = deleteResponse.getShardInfo();
 		if (shardInfo.getFailed() > 0) {
 		    for (ReplicationResponse.ShardInfo.Failure failure : shardInfo.getFailures()) {
