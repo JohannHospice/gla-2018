@@ -118,11 +118,17 @@ public class NotificationDAO implements NotificationInterface{
 		return notifs;
 	}
 	
-	public boolean deleteNotification(RestHighLevelClient client, String id) throws IOException {
+	public boolean deleteNotification(RestHighLevelClient client, String id_notif) throws IOException {
+		Notification notif = this.getOneNotification(client, id_notif);
 		DeleteRequest request = new DeleteRequest(
 		        "notifications",    
 		        "doc",     
-		        id);
+		        id_notif);
+		
+		User user = DAO.getActionUser().getOneUser(client, notif.username);
+		user.removeNotifications(id_notif);
+		DAO.getActionUser().updateUser(client, user);
+		
 		DeleteResponse deleteResponse = client.delete(request);
 		ReplicationResponse.ShardInfo shardInfo = deleteResponse.getShardInfo();
 		if (shardInfo.getFailed() > 0) {
