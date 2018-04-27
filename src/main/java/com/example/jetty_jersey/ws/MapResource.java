@@ -37,7 +37,10 @@ public class MapResource extends Ressource {
     @Path("/public")
     public ArrayList<Map> getPublicMaps() throws IOException {
 
-        return DAO.getActionMap().getPublicMaps(DAO.client);
+        ArrayList<Map> list = DAO.getActionMap().getPublicMaps(DAO.client);
+		if (list.size() == 0)
+			return null;
+		return list;
     }
 
     /**
