@@ -217,16 +217,17 @@ public class MapDAO implements MapInterface{
 	}
 	public String concatMapName(String map_name, String username)
 	{
-		return map_name+"_"+username;
+		return username+"_"+map_name;
 	}
-	public String parseMapName(String map_name)
+	public String parseMapName(String map_name)//Retourne le vrai nom de la map
 	{
 		String real_name ="";
+		boolean ins = false;
 		for(int i =0;i<map_name.length();i++)
 		{
 			if(map_name.charAt(i) == '_')
-				return real_name;
-			else
+				ins = true;
+			else if(ins)
 				real_name += map_name.charAt(i);
 		}
 		return real_name;
@@ -235,16 +236,11 @@ public class MapDAO implements MapInterface{
 	{
 		boolean und = false;
 		int c = 0;
-		for(int i =0;i<map_name.length();i++)
+		for(int i =0;i<user_name.length();i++)
 		{
-			if(und)
-			{
-				if(user_name.charAt(c) != map_name.charAt(i))
-					return false;
-			}
-			
-			if(map_name.charAt(i) == '_')
-				und = true;
+			if(user_name.charAt(c) != map_name.charAt(i))
+				return false;
+
 		}
 		return true;
 	}
@@ -263,6 +259,7 @@ public class MapDAO implements MapInterface{
 		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
 		
 		jsonMap.put("name", map.name);
+		jsonMap.put("nameToSearch", map.nameToSearch);
 		jsonMap.put("locations", map.locations);
 		jsonMap.put("created", map.created);
 		jsonMap.put("privateUsers", map.privateUsers);
@@ -327,7 +324,7 @@ public class MapDAO implements MapInterface{
 		return true;
 	}
 
-	public ArrayList<Map> searchMap(RestHighLevelClient client, String name, int from, int size, boolean only_public, boolean only_private) throws IOException {
+	public ArrayList<Map> searchMap(RestHighLevelClient client, String nameToSearch, int from, int size, boolean only_public, boolean only_private) throws IOException {
 		ArrayList<Map> maps = new ArrayList<Map>();
 		
 		SearchRequest searchRequest = new SearchRequest("maps"); 
@@ -336,7 +333,7 @@ public class MapDAO implements MapInterface{
 			searchSourceBuilder.query(QueryBuilders.termQuery("isPublic", "true"));
 		if(only_private && !only_public)
 			searchSourceBuilder.query(QueryBuilders.termQuery("isPublic", "false"));
-		MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("name", name);
+		MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("nameToSearch", nameToSearch);
 		matchQueryBuilder.fuzziness(Fuzziness.AUTO); //Pour chercher un username proche 
 		matchQueryBuilder.maxExpansions(5);
 		searchSourceBuilder.query(matchQueryBuilder); 
