@@ -15,7 +15,7 @@ import java.util.ArrayList;
 @Path("/location")
 public class LocationRessource extends Ressource {
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/get")
     public Location getLocation(@QueryParam("locationname") String locationName) {
         /*
@@ -30,7 +30,7 @@ public class LocationRessource extends Ressource {
     }
 
     @PUT
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_FORM_URLENCODED)
     @Path("/add")
     public boolean addLocation(@Context HttpServletRequest httpRequest,
                                @FormParam("map") String map,
@@ -54,7 +54,7 @@ public class LocationRessource extends Ressource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_FORM_URLENCODED)
     @Path("/remove")
     public boolean removeLocation(@Context HttpServletRequest httpRequest,
                                   @FormParam("mapname") String mapname,
@@ -74,7 +74,7 @@ public class LocationRessource extends Ressource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_FORM_URLENCODED)
     @Path("/update")
     public boolean updateLocation(@Context HttpServletRequest httpRequest,
                                   @FormParam("mapname") String mapname,
