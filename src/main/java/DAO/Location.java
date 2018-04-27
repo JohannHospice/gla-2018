@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Location {
-    public String nameplace;//C'est l'id : nomdelocation_nomdemap
+    public String nameplace;//C'est l'id : //C'est l'id : username_nomdemap_location
     public String mapName;
     public ArrayList<String> urlImg;
     public ArrayList<String> content;
