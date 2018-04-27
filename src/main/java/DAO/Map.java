@@ -6,8 +6,9 @@ import java.util.Date;
 
 
 public class Map {
-    public String name="NoDefined"; //C'est l'id : username_nomdemap
-    public String nameToSearch="";
+    public String id =""; //C'est l'id : username_nomdemap"
+    public String name;
+    public String username;
     public ArrayList<String> locations;
     public ArrayList<String> privateUsers; //un username
     
@@ -19,7 +20,9 @@ public class Map {
      * @param name 
      */
     public Map(String username,String name){
-        this.name = username+"_"+name;
+        this.id = username+"_"+name;
+        this.username = username;
+        this.name = name;
         locations = new ArrayList<String>();
         privateUsers = new ArrayList<String>();
     }
@@ -36,20 +39,27 @@ public class Map {
      * 
      * @param name 
      */
-    public void setName(String name){
-        this.name = name;
+    public void setId(String name){
+        this.id = name;
+    }
+    public String getId()
+    {
+    	return id;
+    }
+    
+    public void setName(String nameToSearch){
+        this.name = nameToSearch;
     }
     public String getName()
     {
     	return name;
     }
-    
-    public void setNameToSearch(String nameToSearch){
-        this.nameToSearch = nameToSearch;
+    public void setUsername(String username){
+        this.username = username;
     }
-    public String getNameToSearch()
+    public String getUsername()
     {
-    	return nameToSearch;
+    	return username;
     }
     
     /**

@@ -213,7 +213,7 @@ public class MapDAO implements MapInterface{
 			
 			String sourceAsString = hit.getSourceAsString();
 			Map map = new ObjectMapper().readValue(sourceAsString, Map.class);
-			if(compareNamesMapUser(map.name, username))
+			if(compareNamesMapUser(map.id, username))
 				maps.add(map);
 		}
 		
@@ -262,15 +262,16 @@ public class MapDAO implements MapInterface{
 	public boolean insertMap(RestHighLevelClient client, Map map) throws IOException{
 		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
 		
+		jsonMap.put("id", map.id);
 		jsonMap.put("name", map.name);
-		jsonMap.put("nameToSearch", map.nameToSearch);
+		jsonMap.put("username", map.username);
 		jsonMap.put("locations", map.locations);
 		jsonMap.put("privateUsers", map.privateUsers);
 		jsonMap.put("isPublic", map.isPublic);
 		jsonMap.put("isFavorite", map.isFavorite);
 		
 		
-		IndexRequest indexRequest = new IndexRequest("maps", "doc",map.name)
+		IndexRequest indexRequest = new IndexRequest("maps", "doc",map.id)
 		        .source(jsonMap)
 		        .opType(DocWriteRequest.OpType.CREATE);
 		
@@ -310,18 +311,18 @@ public class MapDAO implements MapInterface{
 		jsonMap.put("isFavorite", map.isFavorite);
 		UpdateRequest request = new UpdateRequest("maps", 
 		        "doc",  
-		        map.name)
+		        map.id)
 		        .doc(jsonMap);
 		UpdateResponse updateResponse = client.update(request);
 		request.docAsUpsert(false);
 		
 		if (updateResponse.getResult() == DocWriteResponse.Result.UPDATED) {
-			System.out.println("La map "+map.name+ " a été mis à jour");
+			System.out.println("La map "+map.id+ " a été mis à jour");
 		} else if (updateResponse.getResult() == DocWriteResponse.Result.DELETED) {
-			System.out.println("La map "+map.name+ " a été supprimé");
+			System.out.println("La map "+map.id+ " a été supprimé");
 			return false;
 		} else if (updateResponse.getResult() == DocWriteResponse.Result.NOOP) {
-			System.out.println("La map "+map.name+ " n'a pas pu être mis à jour");
+			System.out.println("La map "+map.id+ " n'a pas pu être mis à jour");
 			return false;
 		}
 		return true;

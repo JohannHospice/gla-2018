@@ -137,12 +137,18 @@ public class UserDAO implements UserInterface{
 
 
 	public ArrayList<Map> getMapsOfUser(RestHighLevelClient client, String username) throws IOException{
-		ArrayList<String> maps_name = getOneUser(client,username).maps;
+		User user = getOneUser(client,username);
+		ArrayList<String> maps_name = user.maps;
+		System.out.println(user);
 		ArrayList<Map> maps = new ArrayList<Map>();
 		for(String name: maps_name)
 		{
-			maps.add(DAO.getActionMap().getOneMap(client, name));
+			System.out.print("name");
+			Map map = DAO.getActionMap().getOneMap(client, name);
+			maps.add(map);
+			System.out.print(map);
 		}
+		
 		return maps;
 	}
 	

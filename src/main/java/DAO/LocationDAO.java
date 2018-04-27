@@ -10,10 +10,13 @@ import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.support.replication.ReplicationResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -58,11 +61,11 @@ public class LocationDAO implements LocationInterface{
 	public boolean insertLocation(RestHighLevelClient client, Location location,Map map) throws IOException
 	{	
 		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
+		jsonMap.put("id", location.id);
 		jsonMap.put("nameplace", location.nameplace);
 		jsonMap.put("mapName", location.mapName);
 		jsonMap.put("urlImg", location.urlImg);
 		jsonMap.put("content", location.content);
-		jsonMap.put("created", location.created);
 		jsonMap.put("longitude", location.longitude);
 		jsonMap.put("latitude", location.latitude);
 		jsonMap.put("isFavorite", location.isFavorite);
@@ -85,11 +88,11 @@ public class LocationDAO implements LocationInterface{
 	public boolean insertLocationAndUpdateMap(RestHighLevelClient client, Location location,String map_name) throws IOException
 	{	
 		java.util.Map<String, Object> jsonMap = new HashMap<String, Object>();
+		jsonMap.put("id", location.id);
 		jsonMap.put("nameplace", location.nameplace);
 		jsonMap.put("mapName", location.mapName);
 		jsonMap.put("urlImg", location.urlImg);
 		jsonMap.put("content", location.content);
-		jsonMap.put("created", location.created);
 		jsonMap.put("longitude", location.longitude);
 		jsonMap.put("latitude", location.latitude);
 		jsonMap.put("isFavorite", location.isFavorite);
@@ -135,7 +138,24 @@ public class LocationDAO implements LocationInterface{
 		}
 		return true;
 	}
-
+	
+	public boolean deleteLocation(RestHighLevelClient client, String id_location) throws IOException {
+		DeleteRequest request = new DeleteRequest(
+		        "locations",    
+		        "doc",     
+		        id_location);
+		DeleteResponse deleteResponse = client.delete(request);
+		ReplicationResponse.ShardInfo shardInfo = deleteResponse.getShardInfo();
+		if (shardInfo.getFailed() > 0) {
+		    for (ReplicationResponse.ShardInfo.Failure failure : shardInfo.getFailures()) {
+		        String reason = failure.reason(); 
+		        System.out.println(reason);
+		        return false;
+		    }
+		}
+		return true;		
+	}
+	
 	public void createIndexLocation(RestHighLevelClient client) throws IOException {
 		try
 		{
