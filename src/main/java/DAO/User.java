@@ -12,7 +12,9 @@ public class User{
 	
 	public User()
 	{
-		
+        friends = new ArrayList<String>();
+        maps = new ArrayList<String>();
+        notifications = new ArrayList<String>();
 	}
     /**
      * 
@@ -20,6 +22,7 @@ public class User{
      * @param password
      */
     public User(String mail,String password){
+        super();
         this.mail = mail;
         this.password = password;
         
@@ -32,6 +35,7 @@ public class User{
      * @param password
      */
     public User(String username, String mail,String password){
+        super();
         this.username = username;
     	this.mail = mail;
         this.password = password;
@@ -86,9 +90,6 @@ public class User{
      * @param user
      */
     void addFriend(String user){
-    	if(friends == null) {
-    		friends = new ArrayList<String>();
-    	}
         this.friends.add(user);
     }
     
@@ -116,9 +117,6 @@ public class User{
     }
     
     void addNotifications(String notification){
-    	if(this.notifications == null) {
-    		this.notifications = new ArrayList<String>();
-    	}
         this.notifications.add(notification);
     }
     
@@ -142,12 +140,8 @@ public class User{
      * @param map 
      */
     public void addMap(String map){
-    	if(maps==null) {
-    		maps = new ArrayList<String>();
-    	}
-        if(maps.contains(map))
-            return;
-        this.maps.add(map);
+        if(!maps.contains(map))
+            this.maps.add(map);
     }
     
     /**
@@ -157,8 +151,4 @@ public class User{
     public void deleteMap(String map){
         this.maps.remove(map);
     }
-    
-    
-    
-
 }
