@@ -10,10 +10,12 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import java.util.ArrayList;
+
 @Path("/location")
 public class LocationRessource extends Ressource {
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/get")
     public Location getLocation(@QueryParam("locationname") String locationName) {
         /*
@@ -28,20 +30,22 @@ public class LocationRessource extends Ressource {
     }
 
     @PUT
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_FORM_URLENCODED)
     @Path("/add")
     public boolean addLocation(@Context HttpServletRequest httpRequest,
-                               @FormParam("mapname") String mapname,
-                               @FormParam("locationname") String locationName,
+                               @FormParam("map") String map,
+                               @FormParam("nameplace") String nameplace,
                                @FormParam("latitude") float latitude,
-                               @FormParam("longitude") float longitude) {
+                               @FormParam("longitude") float longitude,
+                               @FormParam("content") ArrayList<String> content,
+                               @FormParam("url") ArrayList<String> url) {
         try {
             User user = getUserBySession(httpRequest);
-            if (user.getMaps().contains(mapname)) {
+            if (user.getMaps().contains(map)) {
                 return DAO.getActionLocation().insertLocationAndUpdateMap(
                         DAO.client,
-                        new Location(mapname, locationName, latitude, longitude),
-                        mapname);
+                        new Location(map,nameplace, latitude, longitude,url,content),
+                        map);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,7 +54,7 @@ public class LocationRessource extends Ressource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_FORM_URLENCODED)
     @Path("/remove")
     public boolean removeLocation(@Context HttpServletRequest httpRequest,
                                   @FormParam("mapname") String mapname,
@@ -70,7 +74,7 @@ public class LocationRessource extends Ressource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_FORM_URLENCODED)
     @Path("/update")
     public boolean updateLocation(@Context HttpServletRequest httpRequest,
                                   @FormParam("mapname") String mapname,
