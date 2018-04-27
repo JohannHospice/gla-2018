@@ -9,6 +9,14 @@
     {
       "id": "profile",
       "title": "Profile"
+    },
+    {
+      "id": "map",
+      "title": "Map"
+    },
+    {
+      "id": "friend",
+      "title": "Friends"
     }
   ]
 }
