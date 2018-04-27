@@ -139,6 +139,7 @@ public class MapDAO implements MapInterface{
 		SearchHits hits = searchResponse.getHits();
 		long totalHits = hits.getTotalHits();
 		float maxScore = hits.getMaxScore();
+		System.out.println("total : "+totalHits+", maxScore : "+maxScore);
 		
 		SearchHit[] searchHits = hits.getHits();																																																															
 		for (SearchHit hit : searchHits) {
@@ -168,6 +169,8 @@ public class MapDAO implements MapInterface{
 		SearchHits hits = searchResponse.getHits();																																																																																									
 		long totalHits = hits.getTotalHits();
 		float maxScore = hits.getMaxScore();
+		
+		System.out.println("total : "+totalHits+", maxScore : "+maxScore);
 		
 		SearchHit[] searchHits = hits.getHits();
 		for (SearchHit hit : searchHits) {
@@ -201,6 +204,7 @@ public class MapDAO implements MapInterface{
 		SearchHits hits = searchResponse.getHits();
 		long totalHits = hits.getTotalHits();
 		float maxScore = hits.getMaxScore();
+		System.out.println("total : "+totalHits+", maxScore : "+maxScore);
 		
 		SearchHit[] searchHits = hits.getHits();
 		for (SearchHit hit : searchHits) {
@@ -261,7 +265,6 @@ public class MapDAO implements MapInterface{
 		jsonMap.put("name", map.name);
 		jsonMap.put("nameToSearch", map.nameToSearch);
 		jsonMap.put("locations", map.locations);
-		jsonMap.put("created", map.created);
 		jsonMap.put("privateUsers", map.privateUsers);
 		jsonMap.put("isPublic", map.isPublic);
 		jsonMap.put("isFavorite", map.isFavorite);
