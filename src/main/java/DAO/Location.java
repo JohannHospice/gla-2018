@@ -4,7 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Location {
-    public String nameplace;//C'est l'id : //C'est l'id : username_nomdemap_location
+    public String id;//C'est l'id : //C'est l'id : username_nomdemap_location
+    public String nameplace;
     public String mapName;
     public ArrayList<String> urlImg;
     public ArrayList<String> content;
@@ -12,9 +13,17 @@ public class Location {
     public float latitude;
     public boolean isFavorite = false;
 
+    
+    public void setId(String map,String nameplace) {
+        this.id = map+"_"+nameplace;
+    }
 
+    public String getId() {
+        return this.id;
+    }
+    
     public void setNameplace(String map,String nameplace) {
-        this.nameplace = map+"_"+nameplace;
+        this.nameplace = nameplace;
     }
 
     public String getNameplace() {
@@ -80,31 +89,15 @@ public class Location {
      * @param nameplace
      */
     public Location(String map,String nameplace) {
-        this.nameplace = map+"_"+nameplace;
+        this.id = map+"_"+nameplace;
     }
 
-    public Location(String map,String nameplace, float latitude, float longitude) {
+    public Location(String map,String nameplace, float latitude, float longitude, ArrayList<String> url, ArrayList<String> content) {
         this(map,nameplace);
+        this.nameplace = nameplace;
+        this.mapName = map;
         this.latitude = latitude;
         this.longitude = longitude;
-    }
-
-    /**
-     * @param nameplace
-     * @param url
-     */
-    public Location(String map,String nameplace, ArrayList<String> url) {
-        this.nameplace = map+"_"+nameplace;
-        this.urlImg = url;
-    }
-
-    /**
-     * @param nameplace
-     * @param url
-     * @param content
-     */
-    public Location(String map,String nameplace, ArrayList<String> url, ArrayList<String> content) {
-        this.nameplace = map+"_"+nameplace;
         this.urlImg = url;
         this.content = content;
     }
