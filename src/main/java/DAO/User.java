@@ -87,6 +87,10 @@ public class User{
         this.friends.add(user);
     }
     
+    public ArrayList<String> getFriends(){
+        return this.friends;
+    }
+    
     public ArrayList<String> getMaps(){
         return this.maps;
     }
@@ -98,7 +102,7 @@ public class User{
     /**
      * @param user 
      */
-    void deleteFriend(User user){
+    void deleteFriend(String user){
         this.friends.remove(user);
     }
     
@@ -122,9 +126,11 @@ public class User{
      * 
      * @param map 
      */
-    public void deleteMap(Map map){
+    public void deleteMap(String map){
         this.maps.remove(map);
     }
+    
+    
     
 
 }
