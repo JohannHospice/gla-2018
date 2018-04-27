@@ -120,6 +120,9 @@ public class User{
         this.notifications.add(notification);
     }
     
+    void removeNotifications(String notification) {
+    	this.notifications.remove(notification);
+    }
     void setNotifications(ArrayList<String> notifications) {
     	this.notifications = notifications;
     }
