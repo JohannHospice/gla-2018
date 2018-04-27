@@ -72,7 +72,7 @@ public class MapResource extends Ressource {
     public Response deleteMap(@Context HttpServletRequest httpRequest,@PathParam("mapname") String mapname) throws Exception {
         User user = getUserBySession(httpRequest);
         Map map = DAO.getActionMap().getOneMap(DAO.client, mapname);
-        boolean success;
+        boolean success = false;
         
         if(map.getUsername().equals(user.getUsername()))
         	success = DAO.getActionMap().deleteMap(DAO.client, mapname);
@@ -83,14 +83,15 @@ public class MapResource extends Ressource {
      * @param mapname
      * @return
      * @throws IOException
+     * @throws AuthException 
      */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/by-name/{mapname}")
-    public Map modifMap(@Context HttpServletRequest httpRequest,@PathParam("mapname") String mapname) throws IOException {
+    public Map modifMap(@Context HttpServletRequest httpRequest,@PathParam("mapname") String mapname) throws IOException, AuthException {
         User user = getUserBySession(httpRequest);
         Map map = DAO.getActionMap().getOneMap(DAO.client, mapname);
-        boolean success;
+        boolean success = false;
         if(map.getUsername().equals(user.getUsername()))
         	success = DAO.getActionMap().updateMap(DAO.client, map);
         return (success) ? DAO.getActionMap().getOneMap(DAO.client, mapname) : map;
