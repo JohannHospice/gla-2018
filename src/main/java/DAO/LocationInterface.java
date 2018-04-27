@@ -13,6 +13,8 @@ public interface LocationInterface {
 	 */
 	void createIndexLocation(RestHighLevelClient client) throws IOException;
 	
+	public Location getOneLocation(RestHighLevelClient client, String id_location) throws IOException;
+	
     /**
      * 
      * @return the list of all locations 
