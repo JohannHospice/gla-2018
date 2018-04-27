@@ -150,7 +150,7 @@ public class LocationDAO implements LocationInterface{
 		jsonMap.put("isFavorite", location.isFavorite);
 		UpdateRequest request = new UpdateRequest("locations", 
 		        "doc",  
-		        location.nameplace)
+		        location.id)
 		        .doc(jsonMap);
 		UpdateResponse updateResponse = client.update(request);
 		request.docAsUpsert(false);
