@@ -21,6 +21,7 @@ public class User{
     public User(String mail,String password){
         this.mail = mail;
         this.password = password;
+        
     }
     
     /**
@@ -84,7 +85,14 @@ public class User{
      * @param user
      */
     void addFriend(String user){
+    	if(friends == null) {
+    		friends = new ArrayList<String>();
+    	}
         this.friends.add(user);
+    }
+    
+    void setFriend(ArrayList<String> friends) {
+    	this.friends = friends;
     }
     
     public ArrayList<String> getFriends(){
@@ -117,6 +125,9 @@ public class User{
      * @param map 
      */
     public void addMap(String map){
+    	if(maps==null) {
+    		maps = new ArrayList<String>();
+    	}
         if(maps.contains(map))
             return;
         this.maps.add(map);
