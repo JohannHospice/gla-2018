@@ -40,7 +40,7 @@ public class LocationRessource extends Ressource {
             if (user.getMaps().contains(mapname)) {
                 return DAO.getActionLocation().insertLocationAndUpdateMap(
                         DAO.client,
-                        new Location(locationName, latitude, longitude),
+                        new Location(mapname, locationName, latitude, longitude),
                         mapname);
             }
         } catch (Exception e) {
