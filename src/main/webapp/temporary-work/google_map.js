@@ -1,16 +1,20 @@
 
-	$(document).ready(function () {
-	  $('input[type="file"]').on('change', function(event){ 
-     		console.log('changed!'); 
-		});
-	});
       function initAutocomplete() {
+
+      	//la locationlist quiprovient de ES
+      	var locationList =[
+      	    ['GrandmoulinParis', 48.8299181, 2.3812189999999998, 'tag1'],
+      	    ['Paris', 48.856614,2.3522219000000177, 'tag2']
+      	    ];
+      	
+      	
+      	
         var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -33.8688, lng: 151.2195},
-          zoom: 13,
+          center: {lat: 48.830759, lng: 2.359203999999977},
+          zoom: 12,
           mapTypeId: 'roadmap'
         });
-        
+        addMarkers(locationList);
 	
         // creer le searchbox et le mettre en haut a gauche
         var input = document.getElementById('pac-input');
@@ -23,8 +27,8 @@
         });
 				
         var markers = [];
-        // Listen for the event fired when the user selects a prediction and retrieve
-        // more details for that place.
+        //ajout d'un listener si l'utilisateur selectionne une prediction et récupèration 
+        // plus d'info sur cette place 
         searchBox.addListener('places_changed', function() {
           var places = searchBox.getPlaces();
 
@@ -32,12 +36,12 @@
             return;
           }
 
-          // Clear out the old markers.
+          //efface les anciens marqueus pour rajouter le nouveau a leurs places
           markers.forEach(function(marker) {
             marker.setMap(null);
           });
           markers = [];
-          // For each place, get the icon, name and location.
+          //pour chaque place on recupère son icone, son nom et sa location
           var bounds = new google.maps.LatLngBounds();
           places.forEach(function(place) {
             if (!place.geometry) {
@@ -52,7 +56,7 @@
               scaledSize: new google.maps.Size(25, 25)
             };
 
-            // Create a marker for each place.
+            // creer un marqueur pour chaque postion
             markers.push(new google.maps.Marker({
               map: map,
               icon: icon,
@@ -113,10 +117,13 @@
       		 	position: {lat:lat, lng:lng},
       			map: map
     		 });
-    		 infowindow.open(map, marker);
-    		 
+  			infowindow.open(map, marker);
+    		
+    		
+    		 //listener pour pour ouvrir l'infowindow si elle est fermée
     		 marker.addListener('click',function(){
  	  			infowindow.open(map, marker);
+ 	  		
  	 		 });
  	 		 //listener pour supprimer le marker de la map
  	 		 //PS: IL FAUT IMPLEMENTER ICI LA SUPRESSION DES INFO DE LA BD
@@ -130,12 +137,42 @@
     	function toSubmit(){
     	
    		}
-    
-	
- 
-
-
-
-  }
-
-		
+    	
+    	
+    	
+    	
+    	//ajout sur la map des markeurs aprtir d'une liste de locations provenant de ES
+        function addMarkers(locationList){
+           var marker, i, infoWindowContent;
+           for (var i = 0; i < locationList.length; i++){
+        	   
+            infoWindowContent='<h3>'+'Position: '+'</h3>'+ '<h4>'+locationList[i][0]+'</h4>'+'<br>'+'<h3>'+'#Tag: '+'</h3>'+'<h4>'+locationList[i][3]+'</h4>';
+            var infowindow = new google.maps.InfoWindow({
+            	'position' : {lat:locationList[i][1], lng:locationList[i][2]}, 
+    			'content': infoWindowContent
+            });
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(locationList[i][1], locationList[i][2]),
+                    map: map,                    
+                    title: locationList[i][0]
+                });
+                infowindow.open(map, marker);
+                //listener pour pour ouvrir l'infowindow si elle est fermée
+       		 marker.addListener('click',function(){
+    	  			infowindow.open(map, marker);
+    	  		
+    	 		 });
+                marker.addListener('rightclick',function(){
+     	 		 	this.setMap(null);
+     	 		 	marker=null;
+     	 		 });
+                
+           }
+ }}
+      
+      
+      
+      
+      
+      
+      
