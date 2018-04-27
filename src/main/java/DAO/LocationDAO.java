@@ -62,7 +62,6 @@ public class LocationDAO implements LocationInterface{
 		jsonMap.put("mapName", location.mapName);
 		jsonMap.put("urlImg", location.urlImg);
 		jsonMap.put("content", location.content);
-		jsonMap.put("created", location.created);
 		jsonMap.put("longitude", location.longitude);
 		jsonMap.put("latitude", location.latitude);
 		jsonMap.put("isFavorite", location.isFavorite);
@@ -89,7 +88,6 @@ public class LocationDAO implements LocationInterface{
 		jsonMap.put("mapName", location.mapName);
 		jsonMap.put("urlImg", location.urlImg);
 		jsonMap.put("content", location.content);
-		jsonMap.put("created", location.created);
 		jsonMap.put("longitude", location.longitude);
 		jsonMap.put("latitude", location.latitude);
 		jsonMap.put("isFavorite", location.isFavorite);
