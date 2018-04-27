@@ -62,19 +62,21 @@ public class AuthResource extends Ressource{
                 user.setMail(email);
                 user.setPassword(password);
                 user.setUsername(username);
-                
-                Map map = new Map(username,"random");
-                user.addMap(map.getName());
-                
-                Map map2 = new Map(username,"random2");
-                user.addMap(map.getName());
 
-                DAO.getActionMap().insertMap(DAO.client, map);
-                DAO.getActionMap().insertMap(DAO.client, map2);
-				
-                DAO.getActionUser().insertUser(DAO.client, user);
-                
-                return new SimpleResponse(true);
+                if(DAO.getActionUser().insertUser(DAO.client, user))
+				{
+					Map map = new Map(username,"random");
+					user.addMap(map.getName());
+					Map map2 = new Map(username,"random2");
+					user.addMap(map.getName());
+
+					DAO.getActionMap().insertMap(DAO.client, map);
+					DAO.getActionMap().insertMap(DAO.client, map2);
+
+                    return new SimpleResponse(true);
+				}
+				else
+                    return new SimpleResponse(false);
             }
         } catch (IOException e) {
             e.printStackTrace();
