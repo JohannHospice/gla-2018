@@ -108,8 +108,8 @@ public class MapResource extends Ressource {
     public Map createMap(@Context HttpServletRequest httpRequest, @FormParam("mapname") String mapname) throws IOException {
         try {
             User user = getUserBySession(httpRequest);
-            user.addMap(mapname);
-            Map map = new Map(mapname);
+            Map map = new Map(user.getUsername(),mapname);
+            user.addMap(map.getName());
 
             DAO.getActionMap().insertMap(DAO.client, map);
             DAO.getActionUser().updateUser(DAO.client, user);

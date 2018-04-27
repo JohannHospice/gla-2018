@@ -14,8 +14,8 @@ public class Location {
     public boolean isFavorite = false;
 
 
-    public void setNameplace(String nameplace) {
-        this.nameplace = nameplace;
+    public void setNameplace(String map,String nameplace) {
+        this.nameplace = map+"_"+nameplace;
     }
 
     public String getNameplace() {
@@ -80,13 +80,13 @@ public class Location {
     /**
      * @param nameplace
      */
-    public Location(String nameplace) {
-        this.nameplace = nameplace;
+    public Location(String map,String nameplace) {
+        this.nameplace = map+"_"+nameplace;
         this.created = LocalDateTime.now();
     }
 
-    public Location(String nameplace, float latitude, float longitude) {
-        this(nameplace);
+    public Location(String map,String nameplace, float latitude, float longitude) {
+        this(map,nameplace);
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -95,8 +95,8 @@ public class Location {
      * @param nameplace
      * @param url
      */
-    public Location(String nameplace, ArrayList<String> url) {
-        this.nameplace = nameplace;
+    public Location(String map,String nameplace, ArrayList<String> url) {
+        this.nameplace = map+"_"+nameplace;
         this.urlImg = url;
         this.created = LocalDateTime.now();
     }
@@ -106,8 +106,8 @@ public class Location {
      * @param url
      * @param content
      */
-    public Location(String nameplace, ArrayList<String> url, ArrayList<String> content) {
-        this.nameplace = nameplace;
+    public Location(String map,String nameplace, ArrayList<String> url, ArrayList<String> content) {
+        this.nameplace = map+"_"+nameplace;
         this.urlImg = url;
         this.content = content;
         this.created = LocalDateTime.now();

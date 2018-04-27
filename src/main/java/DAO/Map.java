@@ -16,20 +16,22 @@ public class Map {
     
     /**
      * 
-     * @param owner
      * @param name 
      */
-    public Map(String name){
-        this.name = name;
+    public Map(String username,String name){
+        this.name = username+"_"+name;
         this.created = LocalDateTime.now();
+        locations = new ArrayList<String>();
+        privateUsers = new ArrayList<String>();
     }
     
     /**
      * 
-     * @param owner 
      */
     public Map(){
         this.created = LocalDateTime.now();
+        locations = new ArrayList<String>();
+        privateUsers = new ArrayList<String>();
     }
     
     /**

@@ -112,7 +112,7 @@ public class UserResource extends Ressource {
         return DAO.getActionUser().updateUser(DAO.client, user);
     }
 
-    @POST
+    @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/friends")
@@ -121,7 +121,7 @@ public class UserResource extends Ressource {
         return user.friends;
     }
 
-    @POST
+    @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/friends/add")
     public boolean addFriend(@Context HttpServletRequest httpRequest, @FormParam("friendname") String friendName) throws Exception {
@@ -135,7 +135,7 @@ public class UserResource extends Ressource {
         return false;
     }
 
-    @POST
+    @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/friends/remove")
     public boolean removeFriend(@Context HttpServletRequest httpRequest, @FormParam("friendname") final String friendName) throws Exception {
