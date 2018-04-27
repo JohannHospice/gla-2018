@@ -39,7 +39,7 @@ public class UserResource extends Ressource {
     }
     
     /**
-     * @param username
+     * @param httpRequest
      * @return
      * @throws Exception
      */
@@ -113,12 +113,11 @@ public class UserResource extends Ressource {
     }
 
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/friends")
-    public ArrayList<String> getFriends(@Context HttpServletRequest httpRequest, @FormParam("friendname") String friendName) throws Exception {
+    public ArrayList<String> getFriends(@Context HttpServletRequest httpRequest) throws Exception {
         User user = getUserBySession(httpRequest);
-        return user.friends;
+        return user.getFriends();
     }
 
     @PUT
