@@ -140,7 +140,7 @@ public class MapDAO implements MapInterface{
 		long totalHits = hits.getTotalHits();
 		float maxScore = hits.getMaxScore();
 		
-		SearchHit[] searchHits = hits.getHits();
+		SearchHit[] searchHits = hits.getHits();																																																															
 		for (SearchHit hit : searchHits) {
 		    // do something with the SearchHit
 			//String index = hit.getId();
@@ -163,9 +163,9 @@ public class MapDAO implements MapInterface{
 		searchSourceBuilder.from(from); 
 		searchSourceBuilder.size(size);
 		searchRequest.source(searchSourceBuilder);
-		
+																				
 		SearchResponse searchResponse = client.search(searchRequest);
-		SearchHits hits = searchResponse.getHits();
+		SearchHits hits = searchResponse.getHits();																																																																																									
 		long totalHits = hits.getTotalHits();
 		float maxScore = hits.getMaxScore();
 		

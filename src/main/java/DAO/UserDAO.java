@@ -68,7 +68,7 @@ public class UserDAO implements UserInterface{
 	public ArrayList<User> getUsers(RestHighLevelClient client, int from, int size) throws IOException {
 		ArrayList<User> users = new ArrayList<User>();
 		
-		SearchRequest searchRequest = new SearchRequest("users"); 
+		SearchRequest searchRequest = new SearchRequest("users");
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
 		searchSourceBuilder.query(QueryBuilders.matchAllQuery()); 
 		searchSourceBuilder.from(from); 

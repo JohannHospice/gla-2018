@@ -8,7 +8,8 @@ public class User{
 	public String username;
 	public ArrayList<String> friends; //Liste d'username
 	public ArrayList<String> maps; // Liste de nom des maps (parce que y'a pas d'increment id)
-    
+	public ArrayList<String> notifications;
+	
 	public User()
 	{
 		
@@ -113,6 +114,22 @@ public class User{
     void deleteFriend(String user){
         this.friends.remove(user);
     }
+    
+    void addNotifications(String notification){
+    	if(this.notifications == null) {
+    		this.notifications = new ArrayList<String>();
+    	}
+        this.notifications.add(notification);
+    }
+    
+    void setNotifications(ArrayList<String> notifications) {
+    	this.notifications = notifications;
+    }
+    
+    public ArrayList<String> getNotifications(){
+        return this.notifications;
+    }
+    
     
     @Override
     public String toString(){
