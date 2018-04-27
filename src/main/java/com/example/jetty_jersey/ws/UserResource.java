@@ -44,16 +44,18 @@ public class UserResource extends Ressource {
      * @throws Exception
      */
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/maps")
     public ArrayList<Map> getMapsOfUser(@Context HttpServletRequest httpRequest) throws Exception {
 		System.out.println("/maps");
     	User user = getUserBySession(httpRequest);
 		System.out.println(user.toString());
-
+		
         ArrayList<Map> list = DAO.getActionUser().getMapsOfUser(DAO.client, user.getUsername());
 		if (list.size() == 0)
 			return null;
+		for(Map map: list)
+			System.out.println(map);
 		return list;
     }
 
@@ -63,7 +65,7 @@ public class UserResource extends Ressource {
      * @throws IOException
      */
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/by-name/{username}")
     public ArrayList<Map> getUserMaps(@PathParam("username") String username) throws IOException {
         return DAO.getActionMap().getPublicMapsByUsername(DAO.client, username,0,10,true,false);
@@ -77,7 +79,7 @@ public class UserResource extends Ressource {
      * @throws IOException
      */
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/by-name/{username}/friends")
     public ArrayList<User> getFriends(@PathParam("username") String username) throws IOException {
 
@@ -90,7 +92,7 @@ public class UserResource extends Ressource {
      * @throws IOException
      */
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/by-name/{username}/info")
     public User getUserBySession(@PathParam("username") String username) throws IOException {
 
@@ -103,7 +105,7 @@ public class UserResource extends Ressource {
      * @throws Exception
      */
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/info")
     public boolean modifyUserData(@Context HttpServletRequest httpRequest,
     							@FormParam("email") String email,
@@ -126,7 +128,7 @@ public class UserResource extends Ressource {
     }
 
     @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/friends/add")
     public boolean addFriend(@Context HttpServletRequest httpRequest, @FormParam("friendname") String friendName) throws Exception {
         User user = getUserBySession(httpRequest);
@@ -140,7 +142,7 @@ public class UserResource extends Ressource {
     }
 
     @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/friends/remove")
     public boolean removeFriend(@Context HttpServletRequest httpRequest, @FormParam("friendname") final String friendName) throws Exception {
         User user = getUserBySession(httpRequest);

@@ -11,6 +11,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
+import java.util.ArrayList;
 
 @PermitAll
 @Path("/auth")
@@ -30,8 +31,15 @@ public class AuthResource extends Ressource{
     public SimpleResponse login(@Context HttpServletRequest httpRequest,
                                 @FormParam("username") String username,
                                 @FormParam("password") String password) {
-
-        System.out.println("in /login");
+        
+    	System.out.println("in /login");
+        try {
+			ArrayList<User> list = DAO.getActionUser().getUsers(DAO.client);
+        for(User u: list)
+        	System.out.println(u);
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
         User user = null;
 		try {
             user = DAO.getActionUser().getOneUser(DAO.client, username);
@@ -40,6 +48,7 @@ public class AuthResource extends Ressource{
             if (user.getPassword().equals(password)) {
                 httpRequest.getSession().getId(); // initialize session
                 httpRequest.getSession().setAttribute("user", user);
+                
                 return new SimpleResponse(true);
             }
             System.out.println("Mauvais mot de passe");
@@ -66,14 +75,16 @@ public class AuthResource extends Ressource{
 
                 if(DAO.getActionUser().insertUser(DAO.client, user))
 				{
-					Map map = new Map(username,"random");
+					/*Map map = new Map(username,"random");
 					user.addMap(map.getName());
 					Map map2 = new Map(username,"random2");
-					user.addMap(map.getName());
+					user.addMap(map2.getName());
 
 					DAO.getActionMap().insertMap(DAO.client, map);
 					DAO.getActionMap().insertMap(DAO.client, map2);
-
+					
+					DAO.getActionUser().updateUser(DAO.client, user);*/
+                	
                     return new SimpleResponse(true);
 				}
 				else
