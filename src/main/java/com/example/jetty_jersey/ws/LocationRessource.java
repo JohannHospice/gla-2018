@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -18,16 +17,26 @@ public class LocationRessource extends Ressource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/get")
-    public Location getLocation(@QueryParam("locationname") String locationName) {
-    	//Map mapname = 
-        
-        // todo securite
+    public Location getLocation(@Context HttpServletRequest httpRequest,
+                                @QueryParam("locationname") String locationName) {
         try {
-            return DAO.getActionLocation().getOneLocation(DAO.client, locationName);
+            Location location = DAO.getActionLocation().getOneLocation(DAO.client, locationName);
+            String mapname = location.getMapName();
+            Map map = DAO.getActionMap().getOneMap(DAO.client, mapname);
+
+            if (map.getIsPublic()) {
+                return location;
+            } else {
+                try {
+                    User user = getUserBySession(httpRequest);
+                    if (user.getMaps().contains(mapname) || map.getPrivateUsers().contains(user.getUsername()))
+                        return location;
+                } catch (AuthException ignored) {
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
         return null;
     }
 
@@ -48,14 +57,12 @@ public class LocationRessource extends Ressource {
             ArrayList<String> contents = new ArrayList<String>();
             contents.add(content);
             if (user.getMaps().contains(map)) {
-                boolean success = DAO.getActionLocation().insertLocationAndUpdateMap(
+                return DAO.getActionLocation().insertLocationAndUpdateMap(
                         DAO.client,
-                        new Location(map,nameplace, latitude, longitude,urls,contents),
+                        new Location(map, nameplace, latitude, longitude, urls, contents),
                         map);
-                return success;
-            }
-            else
-            	return false;
+            } else
+                return false;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,6 +81,7 @@ public class LocationRessource extends Ressource {
                 Map map = DAO.getActionMap().getOneMap(DAO.client, mapname);
                 map.removeLocation(locationName);
                 DAO.getActionLocation().deleteLocation(DAO.client, locationName);
+                DAO.getActionMap().updateMap(DAO.client, map);
                 return true;
             }
         } catch (Exception e) {
@@ -96,16 +104,14 @@ public class LocationRessource extends Ressource {
             if (user.getMaps().contains(mapname)) {
                 Map map = DAO.getActionMap().getOneMap(DAO.client, mapname);
                 if (map.getLocations().contains(locationName)) {
-                
-                Location location = DAO.getActionLocation().getOneLocation(DAO.client, locationName);
-                location.setLatitude(latitude);
-                location.setLongitude(longitude);
-                // attention nom de la localisation non modifiable selon la BD localisationName = id
-                // pareil pour les map
-                location.content.add(description);
-                DAO.getActionLocation().updateLocation(DAO.client, location);
-                return true;
-                
+                    Location location = DAO.getActionLocation().getOneLocation(DAO.client, locationName);
+                    location.setLatitude(latitude);
+                    location.setLongitude(longitude);
+                    // attention nom de la localisation non modifiable selon la BD localisationName = id
+                    // pareil pour les map
+                    location.content.add(description);
+                    DAO.getActionLocation().updateLocation(DAO.client, location);
+                    return true;
                 }
             }
         } catch (Exception e) {

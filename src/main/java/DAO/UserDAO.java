@@ -138,10 +138,10 @@ public class UserDAO implements UserInterface{
 
 	public ArrayList<Map> getMapsOfUser(RestHighLevelClient client, String username) throws IOException{
 		User user = getOneUser(client,username);
-		ArrayList<String> maps_name = user.maps;
+		ArrayList<String> maps_id = user.maps;
 		System.out.println(user);
 		ArrayList<Map> maps = new ArrayList<Map>();
-		for(String name: maps_name)
+		for(String name: maps_id)
 		{
 			System.out.print("name");
 			Map map = DAO.getActionMap().getOneMap(client, name);
@@ -160,6 +160,7 @@ public class UserDAO implements UserInterface{
 		jsonMap.put("mail", user.mail);
 		jsonMap.put("friends", user.friends);
 		jsonMap.put("maps", user.maps);
+		jsonMap.put("notifications", user.notifications);
 		IndexRequest indexRequest = new IndexRequest("users", "doc",user.username)
 		        .source(jsonMap)
 		        .opType(DocWriteRequest.OpType.CREATE);
@@ -185,6 +186,7 @@ public class UserDAO implements UserInterface{
 		jsonMap.put("mail", user.mail);
 		jsonMap.put("friends", user.friends);
 		jsonMap.put("maps", user.maps);
+		jsonMap.put("notifications", user.notifications);
 		UpdateRequest request = new UpdateRequest("users", 
 		        "doc",  
 		        user.username)

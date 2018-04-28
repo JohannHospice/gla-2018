@@ -39,6 +39,7 @@ public class User{
         this.username = username;
     	this.mail = mail;
         this.password = password;
+        this.notifications = new ArrayList<String>();
     }
     
     /**
