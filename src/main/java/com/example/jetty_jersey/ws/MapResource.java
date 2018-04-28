@@ -128,7 +128,7 @@ public class MapResource extends Ressource {
         try {
             User user = getUserBySession(httpRequest);
             Map map = new Map(user.getUsername(),mapname);
-            if(isPublic.equals("off"))
+            if(isPublic==null)
             	map.changePublic();
             user.addMap(map.getId());
 
@@ -151,6 +151,8 @@ public class MapResource extends Ressource {
             if(!user.getFriends().contains(friendname))
             	return false;
             Map map = DAO.getActionMap().getOneMap(DAO.client, mapname);
+            if(map==null)
+            	return false;
             if (user.getMaps().contains(map.getId())) {
                 User otherUser = DAO.getActionUser().getOneUser(DAO.client, friendname);
                 map.privateUsers.add(otherUser.getUsername());
