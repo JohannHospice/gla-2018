@@ -3,7 +3,7 @@ package DAO;
 public class Notification {
 	public String username;
 	public String message;
-	public int messageType; //0 = Demande d'ami, 1 = Avertissement 
+	public int messageType; //0 = Demande d'ami, 1 = Avertissement, 2 = Envoie de map
 	public boolean readed;
 	
 	public Notification()
