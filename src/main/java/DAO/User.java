@@ -16,6 +16,7 @@ public class User{
         friends = new ArrayList<String>();
         maps = new ArrayList<String>();
         notifications = new ArrayList<String>();
+        maps_read_only = new ArrayList<String>();
 	}
     /**
      * 
@@ -40,6 +41,8 @@ public class User{
         this.username = username;
     	this.mail = mail;
         this.password = password;
+        this.notifications = new ArrayList<String>();
+        this.maps_read_only = new ArrayList<String>();
     }
     
     /**
