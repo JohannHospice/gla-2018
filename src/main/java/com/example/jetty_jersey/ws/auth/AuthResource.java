@@ -36,7 +36,7 @@ public class AuthResource extends Ressource{
         try {
 			ArrayList<User> list = DAO.getActionUser().getUsers(DAO.client);
         for(User u: list)
-        	System.out.println(u);
+        	System.out.println(u.toString());
         } catch (Exception e) {
         	e.printStackTrace();
         }
@@ -75,15 +75,15 @@ public class AuthResource extends Ressource{
 
                 if(DAO.getActionUser().insertUser(DAO.client, user))
 				{
-					/*Map map = new Map(username,"random");
-					user.addMap(map.getName());
+					Map map = new Map(username,"random");
+					user.addMap(map.getId());
 					Map map2 = new Map(username,"random2");
-					user.addMap(map2.getName());
+					user.addMap(map2.getId());
 
 					DAO.getActionMap().insertMap(DAO.client, map);
 					DAO.getActionMap().insertMap(DAO.client, map2);
 					
-					DAO.getActionUser().updateUser(DAO.client, user);*/
+					DAO.getActionUser().updateUser(DAO.client, user);
                 	
                     return new SimpleResponse(true);
 				}
