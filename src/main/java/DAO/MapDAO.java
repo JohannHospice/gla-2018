@@ -286,12 +286,19 @@ public class MapDAO implements MapInterface{
 		return true;
 	}
 
-	public boolean deleteMap(RestHighLevelClient client, String map_name) throws IOException {
+	public boolean deleteMap(RestHighLevelClient client, String map_id) throws IOException {
+		Map map = this.getOneMap(client, map_id);
+		ArrayList<String> locations_id  = map.getLocations();
 		DeleteRequest request = new DeleteRequest(
 		        "maps",    
 		        "doc",     
-		        map_name);
+		        map_id);
 		DeleteResponse deleteResponse = client.delete(request);
+		 
+		for (String location : locations_id) {
+			DAO.getActionLocation().deleteLocation(client, location);
+		}
+		
 		ReplicationResponse.ShardInfo shardInfo = deleteResponse.getShardInfo();
 		if (shardInfo.getFailed() > 0) {
 		    for (ReplicationResponse.ShardInfo.Failure failure : shardInfo.getFailures()) {
