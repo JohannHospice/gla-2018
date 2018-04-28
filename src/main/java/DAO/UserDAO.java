@@ -161,7 +161,6 @@ public class UserDAO implements UserInterface{
 		jsonMap.put("friends", user.friends);
 		jsonMap.put("maps", user.maps);
 		jsonMap.put("notifications", user.notifications);
-		jsonMap.put("maps_read_only", user.maps_read_only);
 		IndexRequest indexRequest = new IndexRequest("users", "doc",user.username)
 		        .source(jsonMap)
 		        .opType(DocWriteRequest.OpType.CREATE);
@@ -188,7 +187,6 @@ public class UserDAO implements UserInterface{
 		jsonMap.put("friends", user.friends);
 		jsonMap.put("maps", user.maps);
 		jsonMap.put("notifications", user.notifications);
-		jsonMap.put("maps_read_only", user.maps_read_only);
 		UpdateRequest request = new UpdateRequest("users", 
 		        "doc",  
 		        user.username)

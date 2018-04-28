@@ -8,7 +8,6 @@ public class User{
 	public String username;
 	public ArrayList<String> friends; //Liste d'username
 	public ArrayList<String> maps; // Liste de nom des maps (parce que y'a pas d'increment id)
-	public ArrayList<String> maps_read_only;
 	public ArrayList<String> notifications;
 	
 	public User()
@@ -16,7 +15,6 @@ public class User{
         friends = new ArrayList<String>();
         maps = new ArrayList<String>();
         notifications = new ArrayList<String>();
-        maps_read_only = new ArrayList<String>();
 	}
     /**
      * 
@@ -42,7 +40,6 @@ public class User{
     	this.mail = mail;
         this.password = password;
         this.notifications = new ArrayList<String>();
-        this.maps_read_only = new ArrayList<String>();
     }
     
     /**
@@ -135,20 +132,6 @@ public class User{
         return this.notifications;
     }
     
-    void addMapsReadOnly(String maps_read_only){
-        this.maps_read_only.add(maps_read_only);
-    }
-    
-    void removeMapsReadOnly(String maps_read_only) {
-    	this.maps_read_only.remove(maps_read_only);
-    }
-    void setMapsReadOnly(ArrayList<String> maps_read_only) {
-    	this.maps_read_only = maps_read_only;
-    }
-    
-    public ArrayList<String> getMapsReadOnly(){
-        return this.maps_read_only;
-    }
     
     @Override
     public String toString(){
