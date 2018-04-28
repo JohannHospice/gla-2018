@@ -16,6 +16,20 @@ import java.util.ArrayList;
 public class LocationRessource extends Ressource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getAllByMap")
+    public ArrayList<Location> getAllMapLocations(@Context HttpServletRequest httpRequest,
+                                              @QueryParam("mapname") String mapName) {
+        //todo security private map
+        try {
+            return DAO.getActionLocation().getLocations(DAO.client, mapName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/get")
     public Location getLocation(@Context HttpServletRequest httpRequest,
                                 @QueryParam("locationname") String locationName) {
