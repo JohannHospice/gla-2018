@@ -242,7 +242,7 @@ public class MapDAO implements MapInterface{
 		int c = 0;
 		for(int i =0;i<user_name.length();i++)
 		{
-			if(user_name.charAt(c) != map_name.charAt(i))
+			if(user_name.charAt(i) != map_name.charAt(i))
 				return false;
 
 		}
