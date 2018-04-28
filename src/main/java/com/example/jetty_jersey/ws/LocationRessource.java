@@ -37,7 +37,6 @@ public class LocationRessource extends Ressource {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
@@ -105,7 +104,6 @@ public class LocationRessource extends Ressource {
             if (user.getMaps().contains(mapname)) {
                 Map map = DAO.getActionMap().getOneMap(DAO.client, mapname);
                 if (map.getLocations().contains(locationName)) {
-
                     Location location = DAO.getActionLocation().getOneLocation(DAO.client, locationName);
                     location.setLatitude(latitude);
                     location.setLongitude(longitude);
@@ -114,7 +112,6 @@ public class LocationRessource extends Ressource {
                     location.content.add(description);
                     DAO.getActionLocation().updateLocation(DAO.client, location);
                     return true;
-
                 }
             }
         } catch (Exception e) {
