@@ -192,6 +192,7 @@ public class MapDAO implements MapInterface{
 		
 		SearchRequest searchRequest = new SearchRequest("maps"); 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
+		searchSourceBuilder.query(QueryBuilders.termQuery("username", username));
 		if(only_public && !only_private)
 			searchSourceBuilder.query(QueryBuilders.termQuery("isPublic", "true"));
 		if(only_private && !only_public)
