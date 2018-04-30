@@ -5,6 +5,30 @@ const queryString = require('query-string');
 const { onLogin, showLogin, showRegister, hideOverlay } = require('../overlay.js');
 
 const initMap = (map_data, googleMaps) => {
+  let map = new googleMaps.Map($('div.show-map div.map')[0], {
+    center: {lat: 48.8709, lng: 2.3561},
+    zoom: 12,
+    mapTypeId: 'roadmap'
+  });
+
+  const addMarker = (loc) => {
+  };
+
+  const loadLocations = () => {
+    map_data.locations.forEach((location_name) => {
+      $.ajax({
+        url: '/ws/location/get',
+        data: {
+          map: map_data.id,
+          locationname: location_name,
+        }
+      }).fail(console.log).done((data) => {
+        if (data.locationname)
+          addMarker(data);
+      });
+    });
+  };
+
   const generateContentWindowLocation = (loc) => {
     let tpl = _.template(require('./tpl/map-location.html'));
     return $(tpl({'location': loc}))[0];
@@ -46,9 +70,13 @@ const initMap = (map_data, googleMaps) => {
         method: 'PUT',
         url: '/ws/location/add',
         data: form.serialize(),
-      }).fail(console.log).done(() => {
+      }).fail((err) => {
+        console.log(err);
+        alert('Location name already exists!');
+      }).done(() => {
         alert('Saved');
         infowindow.close();
+        marker.setMap(null);
       });
       return false;
     });
@@ -63,13 +91,17 @@ const initMap = (map_data, googleMaps) => {
 
     let infowindow = new googleMaps.InfoWindow({
       'position' : {lat:lat, lng:lng},
-      //'content': generateContentWindowForm(lat, lng),
     });
     infowindow.setContent(generateContentWindowForm(lat, lng, marker, infowindow));
-    //generateContentWindowFormEvent();
+
+    infowindow.addListener('closeclick', () => {
+      infowindow.close();
+      marker.setMap(null);
+    });
+
     infowindow.open(map, marker);
 
-
+/*
     //listener pour pour ouvrir l'infowindow si elle est fermée
     marker.addListener('click', () => {
       infowindow.open(map, marker);
@@ -79,7 +111,7 @@ const initMap = (map_data, googleMaps) => {
     //PS: IL FAUT IMPLEMENTER ICI LA SUPRESSION DES INFO DE LA BD
     marker.addListener('rightclick', () => {
       this.setMap(null);
-    });
+    });*/
   }
 
   //la locationlist quiprovient de ES
@@ -88,13 +120,6 @@ const initMap = (map_data, googleMaps) => {
     ['Paris', 48.856614,2.3522219000000177, 'tag2']
   ];
 
-
-
-  let map = new googleMaps.Map($('div.show-map div.map')[0], {
-    center: {lat: 48.830759, lng: 2.359203999999977},
-    zoom: 12,
-    mapTypeId: 'roadmap'
-  });
   addMarkers(locationList);
 
   // creer le searchbox et le mettre en haut a gauche
