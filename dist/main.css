@@ -120,3 +120,75 @@ li.menu-logout {
 div.overlay {
   display: none; }
 
+div.show-map h2 {
+  text-align: center; }
+
+div.show-map .map {
+  height: 30em; }
+
+div.show-map .description {
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300; }
+
+div.show-map .infowindow-content .title {
+  font-weight: bold; }
+
+div.show-map .infowindow-content {
+  display: none; }
+
+div.show-map .infowindow-content {
+  display: inline; }
+
+div.show-map .pac-card {
+  margin: 10px 10px 0 0;
+  border-radius: 2px 0 0 2px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+  font-family: Roboto; }
+
+div.show-map .pac-container {
+  padding-bottom: 12px;
+  margin-right: 12px; }
+
+div.show-map .pac-controls {
+  display: inline-block;
+  padding: 5px 11px; }
+
+div.show-map .pac-controls label {
+  font-family: Roboto;
+  font-size: 13px;
+  font-weight: 300; }
+
+div.show-map .pac-input {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 12px;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 400px; }
+
+div.show-map .pac-input:focus {
+  border-color: #4d90fe; }
+
+div.show-map .title {
+  color: #fff;
+  background-color: #4d90fe;
+  font-size: 25px;
+  font-weight: 500;
+  padding: 6px 12px; }
+
+div.show-map .target {
+  width: 345px; }
+
+div.show-map .canvas {
+  border: 1px solid black;
+  margin-top: 10px; }
+
+
+/*# sourceMappingURL=main.css.map*/

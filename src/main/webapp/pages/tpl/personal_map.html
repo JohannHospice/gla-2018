@@ -4,15 +4,8 @@
     <img src="/assets/gmap.jpg" class="img-responsive">
     <div class="caption">
       <div class="row">
-        <div class="col-md-6 col-xs-6 price">
-          <h3>
-            <label>TAG</label></h3>
-        </div>
-      </div>
-      <p>Description</p>
-      <div class="row">
         <div class="col-md-6">
-          <a href="?id=" class="btn btn-success btn-product"><span class="glyphicon glyphicon-edit"></span> Edit my map</a>
+          <a href="?id=<%= encodeURIComponent(map.id) %>" class="btn btn-success btn-product"><span class="glyphicon glyphicon-edit"></span> Open map</a>
         </div>
         <div class="col-md-6">
           <a class="btn btn-danger btn-product"><span class="glyphicon glyphicon-share"></span> Remove</a>

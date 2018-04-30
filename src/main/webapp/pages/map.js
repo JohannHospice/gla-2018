@@ -1,19 +1,96 @@
 const $ = require('jquery');
+const _ = require('underscore');
 const queryString = require('query-string');
 
 const { onLogin, showLogin, showRegister, hideOverlay } = require('../overlay.js');
 
-function initMap(map) {
+const initMap = (map_data, googleMaps) => {
+  const generateContentWindowLocation = (loc) => {
+    let tpl = _.template(require('./tpl/map-location.html'));
+    return $(tpl({'location': loc}))[0];
+  };
+
+  //ajout sur la map des markeurs aprtir d'une liste de locations provenant de ES
+  const addMarkers = (locationList) => {
+    for (let i = 0; i < locationList.length; i++){
+      let infowindow = new googleMaps.InfoWindow({
+        'position' : {lat:locationList[i][1], lng:locationList[i][2]},
+        'content': generateContentWindowLocation({name: locationList[i][0], image: 'about:blank'}),
+      });
+      let marker = new googleMaps.Marker({
+        position: new googleMaps.LatLng(locationList[i][1], locationList[i][2]),
+        map: map,
+        title: locationList[i][0]
+      });
+      infowindow.open(map, marker);
+      //listener pour pour ouvrir l'infowindow si elle est fermée
+      marker.addListener('click', () => {
+        infowindow.open(map, marker);
+
+      });
+      marker.addListener('rightclick', () => {
+        this.setMap(null);
+        marker=null;
+      });
+
+    }
+  }
+
+  const generateContentWindowForm = (lat, lng, marker, infowindow) => {
+    let tpl = _.template(require('./tpl/map-form.html'));
+    let form = $(tpl({map: map_data, lat: lat, lng: lng}));
+    let html = $('<div></div>');
+    html.append(form);
+    form.submit(() => {
+      $.ajax({
+        method: 'PUT',
+        url: '/ws/location/add',
+        data: form.serialize(),
+      }).fail(console.log).done(() => {
+        alert('Saved');
+        infowindow.close();
+      });
+      return false;
+    });
+    return html[0];
+  };
+
+  const openFormulaire = (lat,lng) => {
+    let marker = new googleMaps.Marker({ //on créé le marqueur
+      position: {lat:lat, lng:lng},
+      map: map
+    });
+
+    let infowindow = new googleMaps.InfoWindow({
+      'position' : {lat:lat, lng:lng},
+      //'content': generateContentWindowForm(lat, lng),
+    });
+    infowindow.setContent(generateContentWindowForm(lat, lng, marker, infowindow));
+    //generateContentWindowFormEvent();
+    infowindow.open(map, marker);
+
+
+    //listener pour pour ouvrir l'infowindow si elle est fermée
+    marker.addListener('click', () => {
+      infowindow.open(map, marker);
+
+    });
+    //listener pour supprimer le marker de la map
+    //PS: IL FAUT IMPLEMENTER ICI LA SUPRESSION DES INFO DE LA BD
+    marker.addListener('rightclick', () => {
+      this.setMap(null);
+    });
+  }
 
   //la locationlist quiprovient de ES
-  var locationList =[
+  let locationList =[
     ['GrandmoulinParis', 48.8299181, 2.3812189999999998, 'tag1'],
     ['Paris', 48.856614,2.3522219000000177, 'tag2']
   ];
 
 
 
-  var map = new google.maps.Map(document.getElementById('map'), {
+  let map = new googleMaps.Map($('div.show-map div.map')[0], {
     center: {lat: 48.830759, lng: 2.359203999999977},
     zoom: 12,
     mapTypeId: 'roadmap'
@@ -21,47 +98,47 @@ function initMap(map) {
   addMarkers(locationList);
 
   // creer le searchbox et le mettre en haut a gauche
-  var input = document.getElementById('pac-input');
-  var searchBox = new google.maps.places.SearchBox(input);
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+  let input = $('div.show-map input.pac-input')[0];
+  let searchBox = new googleMaps.places.SearchBox(input);
+  map.controls[googleMaps.ControlPosition.TOP_LEFT].push(input);
 
   // Bias the SearchBox results towards current map's viewport.
-  map.addListener('bounds_changed', function() {
+  map.addListener('bounds_changed', () => {
     searchBox.setBounds(map.getBounds());
   });
 
-  var markers = [];
+  let markers = [];
   //ajout d'un listener si l'utilisateur selectionne une prediction et récupèration 
   // plus d'info sur cette place 
-  searchBox.addListener('places_changed', function() {
-    var places = searchBox.getPlaces();
+  searchBox.addListener('places_changed', () => {
+    let places = searchBox.getPlaces();
 
     if (places.length == 0) {
       return;
     }
 
     //efface les anciens marqueus pour rajouter le nouveau a leurs places
-    markers.forEach(function(marker) {
+    markers.forEach((marker) => {
       marker.setMap(null);
     });
     markers = [];
     //pour chaque place on recupère son icone, son nom et sa location
-    var bounds = new google.maps.LatLngBounds();
-    places.forEach(function(place) {
+    let bounds = new googleMaps.LatLngBounds();
+    places.forEach((place) => {
       if (!place.geometry) {
         console.log("Returned place contains no geometry");
         return;
       }
-      var icon = {
+      let icon = {
         url: place.icon,
-        size: new google.maps.Size(71, 71),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17, 34),
-        scaledSize: new google.maps.Size(25, 25)
+        size: new googleMaps.Size(71, 71),
+        origin: new googleMaps.Point(0, 0),
+        anchor: new googleMaps.Point(17, 34),
+        scaledSize: new googleMaps.Size(25, 25)
       };
 
       // creer un marqueur pour chaque postion
-      markers.push(new google.maps.Marker({
+      markers.push(new googleMaps.Marker({
         map: map,
         icon: icon,
         title: place.name,
@@ -78,100 +155,13 @@ function initMap(map) {
     map.fitBounds(bounds);
   });
 
-
-
   //listener pour ajouter un popup avec le formulaire sur la map
-  google.maps.event.addListener(map, 'click', function(event) {
-    var myLatLng = event.latLng;
-    var lat = myLatLng.lat();
-    var lng = myLatLng.lng();
+  googleMaps.event.addListener(map, 'click', (ev) => {
+    let myLatLng = ev.latLng;
+    let lat = myLatLng.lat();
+    let lng = myLatLng.lng();
     openFormulaire(lat,lng);
   });
-
-
-  //lecontenu de infowindow (le formulaire)
-  var contentWindow=
-    '<form action="myServer" method="post">'+
-    '<div>'+
-    '<label for="place">Place :</label>'+
-    '<input type="text" id="place" name="user_place" >'+
-    '</div>'+
-    '<div>'+
-    '<label for="tag"> #tag :</label>'+
-    '<input type="tag" id="tag" name="user_tag">'+
-    '</div>'+
-    '<button type="button" id="submit" onclick="toSubmit()">submit</button> '+
-    '<button type="reset" id="cancel">cancel</button> '+
-    '<input type="file">'+'<br>'+
-    '<img src="" height="200" alt="Image preview...">'+
-    '</form>'
-  ;
-
-  var marker;
-  function openFormulaire(lat,lng) {
-    var infowindow = new google.maps.InfoWindow({
-      'position' : {lat:lat, lng:lng}, 
-      'content': contentWindow
-
-    });
-
-    marker = new google.maps.Marker({ //on créé le marqueur
-      position: {lat:lat, lng:lng},
-      map: map
-    });
-    infowindow.open(map, marker);
-
-
-    //listener pour pour ouvrir l'infowindow si elle est fermée
-    marker.addListener('click',function(){
-      infowindow.open(map, marker);
-
-    });
-    //listener pour supprimer le marker de la map
-    //PS: IL FAUT IMPLEMENTER ICI LA SUPRESSION DES INFO DE LA BD
-    marker.addListener('rightclick',function(){
-      this.setMap(null);
-      marker=null;
-    });
-  }
-
-  /*	//fonction toSubmit()
-  function toSubmit(){
-    var tag = document.getElementById("tag").value;
-      alert(tag); 
-  }
-  */
-
-
-
-  //ajout sur la map des markeurs aprtir d'une liste de locations provenant de ES
-  function addMarkers(locationList){
-    var marker, i, infoWindowContent;
-    for (var i = 0; i < locationList.length; i++){
-
-      infoWindowContent='<h3>'+'Position: '+'</h3>'+ '<h4>'+locationList[i][0]+'</h4>'+'<br>'+'<h3>'+'#Tag: '+'</h3>'+'<h4>'+locationList[i][3]+'</h4>';
-      var infowindow = new google.maps.InfoWindow({
-        'position' : {lat:locationList[i][1], lng:locationList[i][2]},
-        'content': infoWindowContent
-      });
-      marker = new google.maps.Marker({
-        position: new google.maps.LatLng(locationList[i][1], locationList[i][2]),
-        map: map,
-        title: locationList[i][0]
-      });
-      infowindow.open(map, marker);
-      //listener pour pour ouvrir l'infowindow si elle est fermée
-      marker.addListener('click',function(){
-        infowindow.open(map, marker);
-
-      });
-      marker.addListener('rightclick',function(){
-        this.setMap(null);
-        marker=null;
-      });
-
-    }
-  }
 }
 
 const showUserMaps = (user) => {
@@ -182,12 +172,21 @@ const showUserMaps = (user) => {
       method: 'PUT',
       url: '/ws/map/add',
       data: form.serialize(),
-    }).always(console.log);
+    }).fail(console.log).done((data) => {
+      console.log(data);
+      window.location.replace('?id=' + data.id);
+    });
     return false;
   });
   $.ajax({
     url: '/ws/user/maps',
-  }).always(console.log);
+  }).fail(console.log).done((data) => {
+    console.log(data);
+    let tpl = _.template(require('./tpl/personal_map.html'));
+    data.forEach((map) => {
+      $('div.app').append(tpl({map: map}));
+    });
+  });
 };
 
 const showMap = (user, map) => {
@@ -195,8 +194,18 @@ const showMap = (user, map) => {
     url: '/ws/map/by-name/' + map
   }).fail(console.log).done((data) => {
     console.log(data);
-    $('div.app').html(require('./tpl/map.html'));
-    window.gapicb = ((_data) => initMap(_data))(data); // TODO promise https://github.com/BespokeView/Load-Google-API/blob/master/src/index.js
+    let tpl = _.template(require('./tpl/map.html'));
+    $('div.app').html(tpl({map: data}));
+    const loadGoogleMapsApi = require('load-google-maps-api');
+    let initMapCallback = (_data) => {
+      return (googleMaps) => {
+        initMap(_data, googleMaps);
+      }
+    };
+    loadGoogleMapsApi({
+      libraries: ['places'],
+      key: 'AIzaSyBNHJBng7O58WtcW4JoZG7j7GQedI_jrmk',
+    }).then(initMapCallback(data));
   });
 };
 
@@ -204,7 +213,7 @@ const main = () => {
   const parsed = queryString.parse(location.search);
   console.log(parsed);
   if (parsed.id)
-    onLogin((user) => showMap(user, parsed.id), showLogin);
+    onLogin((user) => showMap(user, parsed.id), () => showMap(null, parsed.id));
   else
     onLogin(showUserMaps, showLogin);
 }
