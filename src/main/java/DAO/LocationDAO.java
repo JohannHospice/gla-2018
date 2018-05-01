@@ -64,7 +64,7 @@ public class LocationDAO implements LocationInterface{
 		
 		SearchRequest searchRequest = new SearchRequest("locations"); 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
-		searchSourceBuilder.query(QueryBuilders.termQuery("map_name", map_name)); 
+		searchSourceBuilder.query(QueryBuilders.termQuery("mapName", map_name)); 
 		searchRequest.source(searchSourceBuilder);
 		
 		SearchResponse searchResponse = client.search(searchRequest);
@@ -125,9 +125,9 @@ public class LocationDAO implements LocationInterface{
 		jsonMap.put("latitude", location.latitude);
 		jsonMap.put("isFavorite", location.isFavorite);
 		Map map = DAO.getActionMap().getOneMap(client, map_name);
-		map.addLocation(location.nameplace);
+		map.addLocation(location.id);
 		
-		IndexRequest indexRequest = new IndexRequest("locations", "doc",location.nameplace)
+		IndexRequest indexRequest = new IndexRequest("locations", "doc",location.id)
 		        .source(jsonMap)
 		        .opType(DocWriteRequest.OpType.CREATE);
 		

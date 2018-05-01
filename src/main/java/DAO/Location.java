@@ -9,8 +9,8 @@ public class Location {
     public String mapName;
     public ArrayList<String> urlImg;
     public ArrayList<String> content;
-    public float longitude;
-    public float latitude;
+    public String longitude;
+    public String latitude;
     public boolean isFavorite = false;
 
     
@@ -54,19 +54,19 @@ public class Location {
         return this.content;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 
-    public float getLongitude() {
+    public String getLongitude() {
         return this.longitude;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
-    public float getLatitude() {
+    public String getLatitude() {
         return this.latitude;
     }
 
@@ -90,9 +90,18 @@ public class Location {
      */
     public Location(String map,String nameplace) {
         this.id = map+"_"+nameplace;
+        this.nameplace = nameplace;
+        this.mapName = map;
+        urlImg = new ArrayList<String>();
+        content = new ArrayList<String>();
     }
-
-    public Location(String map,String nameplace, float latitude, float longitude, ArrayList<String> url, ArrayList<String> content) {
+    
+    public Location() {
+        urlImg = new ArrayList<String>();
+        content = new ArrayList<String>();
+    }
+    
+    public Location(String map,String nameplace, String latitude, String longitude, ArrayList<String> url, ArrayList<String> content) {
         this(map,nameplace);
         this.nameplace = nameplace;
         this.mapName = map;

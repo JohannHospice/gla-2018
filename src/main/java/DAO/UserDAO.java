@@ -143,10 +143,11 @@ public class UserDAO implements UserInterface{
 		ArrayList<Map> maps = new ArrayList<Map>();
 		for(String name: maps_id)
 		{
-			System.out.print("name");
 			Map map = DAO.getActionMap().getOneMap(client, name);
-			maps.add(map);
-			System.out.print(map);
+			if(map!=null) {
+				System.out.println("name:"+map.getId());
+				maps.add(map);
+			}
 		}
 		
 		return maps;

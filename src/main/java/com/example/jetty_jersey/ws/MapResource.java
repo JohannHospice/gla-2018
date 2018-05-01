@@ -51,10 +51,10 @@ public class MapResource extends Ressource {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/by-name/{mapid}")
-    public Map getOneMap(@Context HttpServletRequest httpRequest,@PathParam("mapid") String mapid) throws IOException, AuthException {
+    @Path("/by-id/{mapId}")
+    public Map getOneMap(@Context HttpServletRequest httpRequest,@PathParam("mapId") String mapId) throws IOException, AuthException {
     	User user = getUserBySession(httpRequest);
-        Map map = DAO.getActionMap().getOneMap(DAO.client, mapid);
+        Map map = DAO.getActionMap().getOneMap(DAO.client, mapId);
         if(map==null)
         	return null;
         if(map.getIsPublic() || map.getUsername().equals(user.getUsername()))
@@ -70,15 +70,27 @@ public class MapResource extends Ressource {
      */
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/by-name/{mapid}")
-    public Response deleteMap(@Context HttpServletRequest httpRequest,@PathParam("mapid") String mapid) throws Exception {
+    @Path("/by-id/{mapId}")
+    public Response deleteMap(@Context HttpServletRequest httpRequest,@PathParam("mapId") String mapId) throws Exception {
         User user = getUserBySession(httpRequest);
-        Map map = DAO.getActionMap().getOneMap(DAO.client, mapid);
+        Map map = DAO.getActionMap().getOneMap(DAO.client, mapId);
         boolean success = false;
         if(map==null)
         	return Response.status(Response.Status.NOT_MODIFIED).build();
-        if(map.getUsername().equals(user.getUsername()))
-        	success = DAO.getActionMap().deleteMap(DAO.client, mapid);
+        if(map.getUsername().equals(user.getUsername())) {
+        	success = DAO.getActionMap().deleteMap(DAO.client, mapId);
+        	if(success) {
+        		for(String privU: map.getPrivateUsers()) {
+        			User friend = DAO.getActionUser().getOneUser(DAO.client,privU);
+        			if(friend != null) {
+        				friend.getMaps().remove(map.getId());
+                		DAO.getActionUser().updateUser(DAO.client,friend);
+        			}
+        		}
+        		user.getMaps().remove(map.getId());
+        		DAO.getActionUser().updateUser(DAO.client,user);
+        	}
+        }
         return (success) ? Response.status(Response.Status.ACCEPTED).build() : Response.status(Response.Status.NOT_MODIFIED).build();
     }
 
@@ -90,14 +102,14 @@ public class MapResource extends Ressource {
      */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/by-name/{mapname}")
-    public Map modifMap(@Context HttpServletRequest httpRequest,@PathParam("mapname") String mapname) throws IOException, AuthException {
+    @Path("/by-id/{mapId}")
+    public Map modifMap(@Context HttpServletRequest httpRequest,@PathParam("mapId") String mapId) throws IOException, AuthException {
         User user = getUserBySession(httpRequest);
-        Map map = DAO.getActionMap().getOneMap(DAO.client, mapname);
+        Map map = DAO.getActionMap().getOneMap(DAO.client, mapId);
         boolean success = false;
         if(map.getUsername().equals(user.getUsername()))
         	success = DAO.getActionMap().updateMap(DAO.client, map);
-        return (success) ? DAO.getActionMap().getOneMap(DAO.client, mapname) : map;
+        return (success) ? DAO.getActionMap().getOneMap(DAO.client, mapId) : map;
     }
 
     /**
@@ -109,9 +121,9 @@ public class MapResource extends Ressource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/public")
-    public ArrayList<Map> searchMap(@FormParam("tokken") String tokken) throws IOException {
+    public ArrayList<Map> searchMap(@FormParam("token") String token) throws IOException {
 
-        return DAO.getActionMap().searchMap(DAO.client, tokken, 0, 10,true,false);
+        return DAO.getActionMap().searchMap(DAO.client, token, 0, 10,true,false);
     }
 
     /**
@@ -123,11 +135,11 @@ public class MapResource extends Ressource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/add")
     public Map createMap(@Context HttpServletRequest httpRequest,
-    					@FormParam("mapname") String mapname,
+    					@FormParam("mapName") String mapName,
     					@FormParam("public") String isPublic) throws IOException {
         try {
             User user = getUserBySession(httpRequest);
-            Map map = new Map(user.getUsername(),mapname);
+            Map map = new Map(user.getUsername(),mapName);
             if(isPublic==null)
             	map.changePublic();
             user.addMap(map.getId());
@@ -145,18 +157,18 @@ public class MapResource extends Ressource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/share")
-    public boolean shareMap(@Context HttpServletRequest httpRequest, @FormParam("mapname") String mapname, @FormParam("friendname") String friendname) throws IOException {
+    public boolean shareMap(@Context HttpServletRequest httpRequest, @FormParam("mapId") String mapId, @FormParam("friendname") String friendname) throws IOException {
         try {
             User user = getUserBySession(httpRequest);
             if(!user.getFriends().contains(friendname))
             	return false;
-            Map map = DAO.getActionMap().getOneMap(DAO.client, mapname);
+            Map map = DAO.getActionMap().getOneMap(DAO.client, mapId);
             if(map==null)
             	return false;
             if (user.getMaps().contains(map.getId())) {
                 User otherUser = DAO.getActionUser().getOneUser(DAO.client, friendname);
                 map.privateUsers.add(otherUser.getUsername());
-                otherUser.addMap(mapname);
+                otherUser.addMap(mapId);
                 DAO.getActionUser().updateUser(DAO.client, otherUser);
                 DAO.getActionMap().updateMap(DAO.client, map);
                 return true;
