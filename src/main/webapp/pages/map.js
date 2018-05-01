@@ -11,31 +11,51 @@ const initMap = (map_data, googleMaps) => {
     mapTypeId: 'roadmap'
   });
 
-  const addMarker = (loc) => {
-  };
-
-  const loadLocations = () => {
-    map_data.locations.forEach((location_name) => {
-      $.ajax({
-        url: '/ws/location/get',
-        data: {
-          map: map_data.id,
-          locationname: location_name,
-        }
-      }).fail(console.log).done((data) => {
-        if (data.locationname)
-          addMarker(data);
-      });
-    });
-  };
-
   const generateContentWindowLocation = (loc) => {
     let tpl = _.template(require('./tpl/map-location.html'));
     return $(tpl({'location': loc}))[0];
   };
 
+  const addMarker = (loc) => {
+    loc.latitude = parseFloat(loc.latitude);
+    loc.longitude = parseFloat(loc.longitude);
+    if (loc.content.length)
+      loc.content = loc.content[0];
+    if (loc.image.length)
+      loc.content = loc.image[0];
+
+    let infowindow = new googleMaps.InfoWindow({
+      'position' : {lat: loc.latitude, lng: loc.longitude},
+      'content': generateContentWindowLocation(loc),
+    });
+    let marker = new googleMaps.Marker({
+      position: new googleMaps.LatLng(loc.latitude, loc.longitude),
+      map: map,
+      title: loc.nameplace,
+    });
+    infowindow.open(map, marker);
+    //listener pour pour ouvrir l'infowindow si elle est fermée
+    marker.addListener('click', () => {
+      infowindow.open(map, marker);
+    });
+    marker.addListener('rightclick', () => { // TODO delete location
+      this.setMap(null);
+      marker=null;
+    });
+  };
+
+  const loadLocations = () => {
+    $.ajax({
+      url: '/ws/location/get/by-mapId/' + map_data.id,
+    }).fail(console.log).done((data) => {
+      console.log(data);
+      data.forEach(addMarker);
+    });
+  };
+  loadLocations();
+
   //ajout sur la map des markeurs aprtir d'une liste de locations provenant de ES
-  const addMarkers = (locationList) => {
+  /*const addMarkers = (locationList) => {
     for (let i = 0; i < locationList.length; i++){
       let infowindow = new googleMaps.InfoWindow({
         'position' : {lat:locationList[i][1], lng:locationList[i][2]},
@@ -58,7 +78,7 @@ const initMap = (map_data, googleMaps) => {
       });
 
     }
-  }
+  };*/
 
   const generateContentWindowForm = (lat, lng, marker, infowindow) => {
     let tpl = _.template(require('./tpl/map-form.html'));
@@ -73,8 +93,10 @@ const initMap = (map_data, googleMaps) => {
       }).fail((err) => {
         console.log(err);
         alert('Location name already exists!');
-      }).done(() => {
+      }).done((data) => {
+        console.log(data);
         alert('Saved');
+        addMarker(data);
         infowindow.close();
         marker.setMap(null);
       });
@@ -115,12 +137,12 @@ const initMap = (map_data, googleMaps) => {
   }
 
   //la locationlist quiprovient de ES
-  let locationList =[
+  /*let locationList =[
     ['GrandmoulinParis', 48.8299181, 2.3812189999999998, 'tag1'],
     ['Paris', 48.856614,2.3522219000000177, 'tag2']
   ];
 
-  addMarkers(locationList);
+  addMarkers(locationList);*/
 
   // creer le searchbox et le mettre en haut a gauche
   let input = $('div.show-map input.pac-input')[0];
@@ -216,7 +238,7 @@ const showUserMaps = (user) => {
 
 const showMap = (user, map) => {
   $.ajax({
-    url: '/ws/map/by-name/' + map
+    url: '/ws/map/by-id/' + map
   }).fail(console.log).done((data) => {
     console.log(data);
     let tpl = _.template(require('./tpl/map.html'));

@@ -190,5 +190,9 @@ div.show-map .canvas {
   border: 1px solid black;
   margin-top: 10px; }
 
+div.show-map img.location-image {
+  max-width: 5em;
+  max-height: 5em; }
+
 
 /*# sourceMappingURL=main.css.map*/
