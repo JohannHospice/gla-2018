@@ -57,7 +57,7 @@ public class MapResource extends Ressource {
         Map map = DAO.getActionMap().getOneMap(DAO.client, mapId);
         if(map==null)
         	return null;
-        if(map.getIsPublic() || map.getUsername().equals(user.getUsername()))
+        if(map.getIsPublic() || map.getUsername().equals(user.getUsername()) || map.getPrivateUsers().contains(user.getUsername()))
         	return map;
         else
         	return null;
@@ -106,6 +106,8 @@ public class MapResource extends Ressource {
     public Map modifMap(@Context HttpServletRequest httpRequest,@PathParam("mapId") String mapId) throws IOException, AuthException {
         User user = getUserBySession(httpRequest);
         Map map = DAO.getActionMap().getOneMap(DAO.client, mapId);
+        if(map==null)
+        	return null;
         boolean success = false;
         if(map.getUsername().equals(user.getUsername()))
         	success = DAO.getActionMap().updateMap(DAO.client, map);
@@ -139,6 +141,8 @@ public class MapResource extends Ressource {
     					@FormParam("public") String isPublic) throws IOException {
         try {
             User user = getUserBySession(httpRequest);
+            if(mapName==null)
+            	return null;
             Map map = new Map(user.getUsername(),mapName);
             if(isPublic==null)
             	map.changePublic();

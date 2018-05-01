@@ -45,6 +45,8 @@ public class LocationRessource extends Ressource {
                                 @PathParam("locationId") String locationId) {
         try {
             Location location = DAO.getActionLocation().getOneLocation(DAO.client, locationId);
+            if(location==null)
+            	return null;
             String mapName = location.getMapName();
             Map map = DAO.getActionMap().getOneMap(DAO.client, mapName);
 

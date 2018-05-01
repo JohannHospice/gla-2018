@@ -93,7 +93,7 @@ public class UserResource extends Ressource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/by-name/{username}/info")
     public User getUserBySession(@PathParam("username") String username) throws IOException {
-
+    	
         return DAO.getActionUser().getOneUser(DAO.client, username);
     }
 
@@ -112,6 +112,7 @@ public class UserResource extends Ressource {
         User user = getUserBySession(httpRequest);
         if(!password.equals(passwordConfirm))
         	return false;
+        
         user.setMail(email);
         user.setPassword(password);
         return DAO.getActionUser().updateUser(DAO.client, user);
@@ -148,6 +149,8 @@ public class UserResource extends Ressource {
         User user = getUserBySession(httpRequest);
         if (user.friends.contains(friendName)) {
         	User friend = DAO.getActionUser().getOneUser(DAO.client,friendName);
+        	if(friend==null)
+        		return false;
             friend.getFriends().remove(user.getUsername());
         	user.getFriends().remove(friendName);
             DAO.getActionUser().updateUser(DAO.client, user);
