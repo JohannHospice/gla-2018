@@ -22,6 +22,8 @@ import org.elasticsearch.action.support.replication.ReplicationResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
@@ -63,8 +65,10 @@ public class LocationDAO implements LocationInterface{
 		ArrayList<Location> locations = new ArrayList<Location>();
 		
 		SearchRequest searchRequest = new SearchRequest("locations"); 
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
-		searchSourceBuilder.query(QueryBuilders.termQuery("mapName", map_name)); 
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("mapName", map_name);
+		
+		searchSourceBuilder.query(matchQueryBuilder);
 		searchRequest.source(searchSourceBuilder);
 		
 		SearchResponse searchResponse = client.search(searchRequest);

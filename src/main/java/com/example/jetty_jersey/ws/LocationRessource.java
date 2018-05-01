@@ -27,9 +27,9 @@ public class LocationRessource extends Ressource {
         		return null;
         	if (map.getIsPublic() || user.getMaps().contains(mapId) || map.getPrivateUsers().contains(user.getUsername()))
                 {
-            	System.out.println("GetAll location: ");
+            	//System.out.println("GetAll location: ");
             	ArrayList<Location> locations = DAO.getActionLocation().getLocations(DAO.client, mapId);;
-            	System.out.println("Nombre="+locations.size());
+            	//System.out.println("Nombre="+locations.size());
             	return locations;    
             	}
         } catch (Exception e) {
