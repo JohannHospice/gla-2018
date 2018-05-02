@@ -229,10 +229,12 @@ const showUserMaps = (user) => {
     url: '/ws/user/maps',
   }).fail(console.log).done((data) => {
     console.log(data);
-    let tpl = _.template(require('./tpl/personal_map.html'));
-    data.forEach((map) => {
-      $('div.app').append(tpl({map: map}));
-    });
+    if (data) {
+      let tpl = _.template(require('./tpl/personal_map.html'));
+      data.forEach((map) => {
+        $('div.app').append(tpl({map: map}));
+      });
+    }
   });
 };
 
